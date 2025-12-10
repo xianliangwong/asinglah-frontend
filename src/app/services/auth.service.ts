@@ -1,0 +1,25 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { LogInResponseDTO } from '../model/responseDTO/LogInResponseDTO';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  constructor(private http: HttpClient) {}
+  private accessToken: string | null = null;
+
+  private apiUrl = 'http://localhost:8080/api/users/refreshAccessToken';
+
+  setAccessToken(token: string) {
+    this.accessToken = token;
+  }
+
+  getAccessToken(): string | null {
+    return this.accessToken;
+  }
+
+  //function to refresh expired accessToken
+  refreshToken(): Observable<{ response: LogInResponseDTO }> {
+    return this.http.post<{ response: LogInResponseDTO }>(this.apiUrl, { withCredentials: true });
+  }
+}

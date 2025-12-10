@@ -11,6 +11,8 @@ export class LogInService {
   constructor(private http: HttpClient) {}
 
   login(request: LogInDTO): Observable<{ response: LogInResponseDTO }> {
-    return this.http.post<{ response: LogInResponseDTO }>(this.apiUrl, request);
+    return this.http.post<{ response: LogInResponseDTO }>(this.apiUrl, request, {
+      withCredentials: true,
+    });
   }
 }

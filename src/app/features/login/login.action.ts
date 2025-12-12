@@ -5,9 +5,9 @@ export const login = createAction('[login] Login ', props<{ logInRequest: LogInD
 
 export const loadLoginSuccess = createAction(
   '[login] Load Log In Success',
-  props<{ accesToken: string; email: string }>()
+  props<{ accessToken: string; email: string }>()
 );
 
-export const loadLoginFail = createAction('[login] Load Log In Fail', props<{ error: string }>());
+export const loadLoginFail = createAction('[login] Load Log In Fail', props<{ status: string }>());
 
 export const closeLoginFail = createAction('[login] close Log In Fail');

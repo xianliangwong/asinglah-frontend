@@ -16,9 +16,19 @@ import { closeLoginFail, login } from '../../features/login/login.action';
 export class Login {
   loginForm: any;
   error$!: Observable<string | null>;
-  success!: Signal<{ status: 'success'; accessToken: string | null } | null>;
+  success!: Signal<{ status: string; accessToken: string | null } | null>;
 
-  constructor(private fb: FormBuilder, private store: Store) {}
+  constructor(private fb: FormBuilder, private store: Store) {
+    this.success = this.store.selectSignal(selectLoginSuccessWithToken);
+
+    effect(() => {
+      const result = this.success();
+      if (result?.status === 'success') {
+        console.log('success login, nav to dashboard');
+        // this.router.navigate(['/dashboard']);
+      }
+    });
+  }
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -26,18 +36,11 @@ export class Login {
       password: ['', Validators.required],
     });
     this.error$ = this.store.select(selectLoginError);
-    this.success = this.store.selectSignal(selectLoginSuccessWithToken);
-
-    effect(() => {
-      const result = this.success();
-      if (result?.status === 'success') {
-        //route to dashboard page, add property route
-        //this.router.navigate(['/dashboard']);
-      }
-    });
+    //this.success = this.store.selectSignal(selectLoginSuccessWithToken);
   }
 
   onSubmit() {
+    console.log('submit button pressed');
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;

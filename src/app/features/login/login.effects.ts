@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { LogInService } from '../../services/login.service';
 import { catchError, map, mergeMap, of, tap } from 'rxjs';
@@ -7,13 +7,10 @@ import { AuthService } from '../../services/auth.service';
 
 @Injectable()
 export class LoginEffects {
-  constructor(
-    private actions$: Actions,
-    private loginService: LogInService,
-    private authService: AuthService
-  ) {
-    console.log('LoginEffects constructed, actions$ =', actions$);
-  }
+  //actions can't be initiazed in constructor as the createeffect will run before construtor
+  actions$ = inject(Actions);
+
+  constructor(private loginService: LogInService, private authService: AuthService) {}
 
   login$ = createEffect(() =>
     this.actions$.pipe(
@@ -22,13 +19,11 @@ export class LoginEffects {
         this.loginService.login(logInRequest).pipe(
           map((response) =>
             loadLoginSuccess({
-              accesToken: response.response.accessToken,
+              accessToken: response.response.accessToken,
               email: response.response.emailAddress,
             })
           ),
-          catchError((error) =>
-            of(loadLoginFail({ error: error.error?.message || 'Login failed' }))
-          )
+          catchError(() => of(loadLoginFail({ status: 'fail' })))
         )
       )
     )
@@ -38,8 +33,13 @@ export class LoginEffects {
     () =>
       this.actions$.pipe(
         ofType(loadLoginSuccess),
-        tap(({ accesToken }) => this.authService.setAccessToken(accesToken))
+        tap(({ accessToken }) => this.authService.setAccessToken(accessToken))
       ),
+    { dispatch: false }
+  );
+
+  debug$ = createEffect(
+    () => this.actions$.pipe(tap((action) => console.log('[DEBUG ACTION]', action))),
     { dispatch: false }
   );
 }

@@ -1,6 +1,6 @@
 export interface LogInState {
   accessToken: string | null;
-  status: 'pending' | 'success' | 'error';
+  status: string | null;
   error: string | null;
   name: string | null;
 }

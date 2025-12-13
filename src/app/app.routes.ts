@@ -30,6 +30,11 @@ export const routes: Routes = [
     providers: [provideState('login', loginReducer), provideEffects([LoginEffects])],
   },
   {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./component/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+  },
+  {
     path: '**',
     redirectTo: 'login',
   },

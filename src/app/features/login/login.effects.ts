@@ -4,6 +4,8 @@ import { LogInService } from '../../services/login.service';
 import { catchError, map, mergeMap, of, tap } from 'rxjs';
 import { login, loadLoginSuccess, loadLoginFail } from './login.action';
 import { AuthService } from '../../services/auth.service';
+import { APIResponse } from 'src/app/model/responseDTO/APIResponse';
+import { LogInResponseDTO } from 'src/app/model/responseDTO/LogInResponseDTO';
 
 @Injectable()
 export class LoginEffects {
@@ -17,13 +19,16 @@ export class LoginEffects {
       ofType(login),
       mergeMap(({ logInRequest }) =>
         this.loginService.login(logInRequest).pipe(
-          map((response) =>
+          map((response: APIResponse<LogInResponseDTO>) =>
             loadLoginSuccess({
-              accessToken: response.response.accessToken,
-              email: response.response.emailAddress,
+              accessToken: response.data.accessToken,
+              email: response.data.emailAddress,
             })
           ),
-          catchError(() => of(loadLoginFail({ status: 'fail' })))
+          catchError((error) => {
+            console.log('error in effect' + error);
+            return of(loadLoginFail({ status: 'fail' }));
+          })
         )
       )
     )

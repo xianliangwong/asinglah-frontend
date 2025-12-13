@@ -1,23 +1,36 @@
-<h2 class="text-2xl font-bold mb-4">Login</h2>
+<div
+  class="grid place-items-center pt-40 grid-rows-6 [grid-template-columns:repeat(auto-fit,minmax(400px,1fr))]"
+>
+  <!-- landing page text -->
+  <div class="">Asing Lah</div>
+  <div class="w-120">
+    <div class="flex justify-center">
+      <h2 class="text-2xl font-bold mb-4">LogIn</h2>
+    </div>
 
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
-  <input formControlName="email" placeholder="Email" class="border p-2 rounded" />
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+      <input formControlName="email" placeholder="Email" class="border p-2 rounded" />
 
-  <input
-    formControlName="password"
-    type="password"
-    placeholder="Password"
-    class="border p-2 rounded"
-  />
+      <input
+        formControlName="password"
+        type="password"
+        placeholder="Password"
+        class="border p-2 rounded"
+      />
 
-  <button type="submit" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-    Login
-  </button>
-</form>
+      <button
+        type="submit"
+        class="bg-blue-500 text-white py-2 rounded hover:bg-blue-800 transition cursor-pointer"
+      >
+        Login
+      </button>
+    </form>
 
-<a routerLink="/signup" class="text-blue-600 underline mt-3 inline-block">
-  Don't have an account? Sign up
-</a>
+    <a routerLink="/signup" class="text-blue-600 underline mt-3 inline-block">
+      Don't have an account? Sign up
+    </a>
+  </div>
+</div>
 
 <!-- ✅ Modal overlay using Tailwind -->
 <div

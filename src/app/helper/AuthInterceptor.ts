@@ -78,11 +78,11 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         return authService.refreshToken().pipe(
           switchMap((newToken) => {
-            authService.setAccessToken(newToken.response.accessToken);
+            authService.setAccessToken(newToken.data.accessToken);
 
             const newAuthReq = req.clone({
               setHeaders: {
-                Authorization: `Bearer ${newToken.response.accessToken}`,
+                Authorization: `Bearer ${newToken.data.accessToken}`,
               },
             });
 

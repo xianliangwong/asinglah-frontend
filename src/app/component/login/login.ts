@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { selectLoginError, selectLoginSuccessWithToken } from '../../features/login/login.selector';
 import { Observable } from 'rxjs';
 import { closeLoginFail, login } from '../../features/login/login.action';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,14 +19,14 @@ export class Login {
   error$!: Observable<string | null>;
   success!: Signal<{ status: string; accessToken: string | null } | null>;
 
-  constructor(private fb: FormBuilder, private store: Store) {
+  constructor(private fb: FormBuilder, private store: Store, private router: Router) {
     this.success = this.store.selectSignal(selectLoginSuccessWithToken);
 
     effect(() => {
       const result = this.success();
       if (result?.status === 'success') {
         console.log('success login, nav to dashboard');
-        // this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']);
       }
     });
   }
@@ -48,9 +49,10 @@ export class Login {
 
     //create the dto object
     const logInRequest = {
-      email: this.loginForm.value.email,
+      emailAddress: this.loginForm.value.email,
       password: this.loginForm.value.password,
     };
+
     this.store.dispatch(login({ logInRequest }));
   }
 

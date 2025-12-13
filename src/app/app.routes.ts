@@ -4,6 +4,7 @@ import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { loginReducer } from './features/login/login.reducer';
 import { LoginEffects } from './features/login/login.effects';
+import { AuthGuard } from './helper/auth.guard';
 
 export const routes: Routes = [
   // {
@@ -31,6 +32,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
+    canActivate: [AuthGuard],
     loadComponent: () =>
       import('./component/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },

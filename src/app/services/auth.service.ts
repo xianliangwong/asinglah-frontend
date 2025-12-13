@@ -21,6 +21,10 @@ export class AuthService {
 
   //function to refresh expired accessToken
   refreshToken(): Observable<APIResponse<LogInResponseDTO>> {
-    return this.http.post<APIResponse<LogInResponseDTO>>(this.apiUrl, { withCredentials: true });
+    return this.http.post<APIResponse<LogInResponseDTO>>(
+      this.apiUrl,
+      {}, //added empty request
+      { withCredentials: true }
+    );
   }
 }

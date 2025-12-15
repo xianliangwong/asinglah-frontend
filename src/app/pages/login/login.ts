@@ -43,6 +43,7 @@ export class Login {
     console.log('submit button pressed');
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+      console.log('invalid form submission');
       return;
     }
 

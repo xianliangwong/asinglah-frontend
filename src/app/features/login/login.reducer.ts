@@ -24,7 +24,7 @@ export const loginReducer = createReducer(
   on(loadLoginFail, (state, { status }) => ({
     ...state,
     status: 'error',
-    error: status,
+    error: 'Log in failed',
   })),
 
   on(closeLoginFail, (state) => ({

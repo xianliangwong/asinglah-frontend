@@ -1,2 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
+
+@layer components {
+  .asinglah-style {
+    @apply text-4xl font-serif font-bold tracking-wide text-gray-900 dark:text-gray-50;
+  }
+}

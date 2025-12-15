@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { LogInService } from '../../services/login.service';
-import { catchError, map, mergeMap, of, tap } from 'rxjs';
+import { catchError, exhaustMap, map, mergeMap, of, tap } from 'rxjs';
 import { login, loadLoginSuccess, loadLoginFail } from './login.action';
 import { AuthService } from '../../services/auth.service';
 import { APIResponse } from 'src/app/model/responseDTO/APIResponse';
@@ -17,7 +17,7 @@ export class LoginEffects {
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(login),
-      mergeMap(({ logInRequest }) =>
+      exhaustMap(({ logInRequest }) =>
         this.loginService.login(logInRequest).pipe(
           map((response: APIResponse<LogInResponseDTO>) =>
             loadLoginSuccess({

@@ -1,8 +1,12 @@
 <div
-  class="grid place-items-center pt-40 grid-rows-6 [grid-template-columns:repeat(auto-fit,minmax(400px,1fr))]"
+  class="grid pt-40 grid-rows-6 place-items-center max-w-800px justify-center [grid-template-columns:repeat(auto-fit,minmax(400px,800px))]"
 >
   <!-- landing page text -->
-  <div class="">Asing Lah</div>
+  <div class="flex flex-col w-88 gap-y-5">
+    <div class="asinglah-style">Asing Lah</div>
+    <p>AsingLah - a expense tracker tool for splitting the bill with your friends and family</p>
+  </div>
+  <!-- justify-self-center (for invidual column's content to be centered)-->
   <div class="w-120">
     <div class="flex justify-center">
       <h2 class="text-2xl font-bold mb-4">LogIn</h2>
@@ -17,6 +21,13 @@
         placeholder="Password"
         class="border p-2 rounded"
       />
+
+      <p
+        *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        class="text-red-500 text-sm"
+      >
+        Please enter a valid email address.
+      </p>
 
       <button
         type="submit"

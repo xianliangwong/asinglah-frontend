@@ -13,7 +13,7 @@ export const AuthGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Try refresh token
+  // if there's refresh token in the cookies, then can superpass auth guard else route to login
   return authService.refreshToken().pipe(
     map((res) => {
       authService.setAccessToken(res.data.accessToken);

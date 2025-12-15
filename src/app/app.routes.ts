@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { Login } from './component/login/login';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { loginReducer } from './features/login/login.reducer';
@@ -27,14 +26,14 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadComponent: () => import('./component/login/login').then((m) => m.Login),
+    loadComponent: () => import('./pages/login/login').then((m) => m.Login),
     providers: [provideState('login', loginReducer), provideEffects([LoginEffects])],
   },
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
     loadComponent: () =>
-      import('./component/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+      import('./pages/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   {
     path: '**',

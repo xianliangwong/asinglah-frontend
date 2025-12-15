@@ -25,7 +25,6 @@ export class Login {
     effect(() => {
       const result = this.success();
       if (result?.status === 'success') {
-        console.log('success login, nav to dashboard');
         this.router.navigate(['/dashboard']);
       }
     });

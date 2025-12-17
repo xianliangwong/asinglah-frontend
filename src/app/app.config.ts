@@ -19,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideStoreDevtools(),
     // AuthInterceptor,
     // provideHttpClient(withInterceptorsFromDi()),
+
     provideHttpClient(withInterceptors([AuthInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
   ],

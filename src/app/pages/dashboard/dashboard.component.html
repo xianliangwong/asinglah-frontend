@@ -1,1 +1,37 @@
-<p>dashboard works!</p>
+<div
+  class="grid h-screen relative"
+  [ngClass]="isCollapsed ? 'grid-cols-[60px_1fr]' : 'grid-cols-[350px_1fr]'"
+>
+  <!-- ✅ Side Panel -->
+  <aside
+    class="bg-white text-black p-4 flex flex-col transition-all duration-300 transform"
+    [ngClass]="
+      isCollapsed
+        ? '-translate-x-full w-[60px] relative z-10'
+        : 'translate-x-0 w-[350px] absolute z-50 h-full shadow-xl'
+    "
+  >
+    <!-- Collapse/Expand Icon -->
+    <mat-icon
+      class="cursor-pointer transition-transform"
+      [ngClass]="isCollapsed ? 'rotate-180' : ''"
+      fontIcon="keyboard_double_arrow_left"
+      (click)="toggleSidePanel()"
+    ></mat-icon>
+
+    <!-- Expanded Content -->
+    <div *ngIf="!isCollapsed" class="mt-4"><app-sidepanel></app-sidepanel></div>
+
+    <!-- Collapsed Content -->
+    <div *ngIf="isCollapsed" class="mt-4"></div>
+  </aside>
+
+  <!-- ✅ Main Content (2 rows) -->
+  <div class="grid grid-rows-[auto_1fr] h-full">
+    <!-- ✅ Top Row -->
+    <section class="bg-gray-200 p-4 border-b border-gray-300">Top content here</section>
+
+    <!-- ✅ Bottom Row -->
+    <section class="bg-white p-4 overflow-auto">Bottom content here (scrollable)</section>
+  </div>
+</div>

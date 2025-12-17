@@ -1,5 +1,5 @@
 <div>
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-y-[100px] h-screen">
     <div>
       <div class="flex flex-row gap-x-3 w-[250px]">
         <mat-icon class="text-4xl" fontIcon="call_merge"></mat-icon>
@@ -7,10 +7,10 @@
       </div>
     </div>
     <div>
-      <div class="flex flex-col gap-y-3 w-[250px]">
+      <div class="flex flex-col gap-y-5 w-[250px]">
         <!-- dashboard item 1 -->
         <div
-          class="flex flex-row hover:bg-gray-500 transition cursor-pointer"
+          class="flex flex-row hover:bg-gray-400 transition cursor-pointer gap-x-[10px]"
           (click)="onDashboardClick()"
         >
           <mat-icon fontIcon="home"></mat-icon>
@@ -18,7 +18,7 @@
         </div>
         <!-- all expense item  -->
         <div
-          class="flex flex-row hover:bg-gray-500 transition cursor-pointer"
+          class="flex flex-row hover:bg-gray-400 transition cursor-pointer gap-x-[10px]"
           (click)="onExpenseClick()"
         >
           <mat-icon fontIcon="attach_money"></mat-icon>
@@ -34,39 +34,50 @@
           </svg>
         </div>
         <!-- expense groups  -->
-        <div>
-          <mat-icon fontIcon="assignment"></mat-icon>
-          <div class="flex-grow-[3]">Groups</div>
-          <div class="hover:bg-gray-500 transition cursor-pointer">
-            <mat-icon
-              class="hover:bg-gray-500 transition cursor-pointer"
-              fontIcon="add"
-              (click)="onAddExpenseGroupClick()"
-            ></mat-icon>
-          </div>
-          <mat-icon
-            class="hover:bg-gray-500 transition cursor-pointer"
-            [ngClass]="{ 'rotate-180': isExpanded }"
-            fontIcon="keyboard_arrow_down"
-            (click)="onExpandExpenseGroup()"
-          ></mat-icon>
+        <div class="flex flex-row">
+          <div class="flex flex-col w-[240px]">
+            <!-- Top row -->
+            <div class="flex flex-row">
+              <div
+                class="flex flex-row flex-grow-[10] hover:bg-gray-400 transition cursor-pointer gap-x-[10px]"
+              >
+                <mat-icon fontIcon="assignment"></mat-icon>
+                <div>Groups</div>
+              </div>
 
-          <!-- ✅ Expandable section -->
-          <div
-            class="transition-all duration-300 overflow-hidden"
-            [style.maxHeight]="isExpanded ? '200px' : '0px'"
-          >
-            <div class="overflow-y-auto max-h-[200px] p-2">
-              <!-- Your scrollable list -->
-              <!-- <div *ngFor="let item of items" class="p-2 border-b border-gray-300">
-                {{ item }}
-              </div> -->
+              <div class="flex flex-row">
+                <!-- Right side icons -->
+                <div class="flex flex-row items-center gap-x-2 ml-auto">
+                  <mat-icon
+                    class="hover:bg-gray-400 transition cursor-pointer"
+                    fontIcon="add"
+                    (click)="onAddExpenseGroupClick()"
+                  ></mat-icon>
+
+                  <mat-icon
+                    class="hover:bg-gray-400 transition cursor-pointer"
+                    [ngClass]="{ 'rotate-180': isExpanded }"
+                    fontIcon="keyboard_arrow_down"
+                    (click)="onExpandExpenseGroup()"
+                  ></mat-icon>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expandable section -->
+            <div
+              class="transition-all duration-300 overflow-hidden"
+              [style.maxHeight]="isExpanded ? '200px' : '0px'"
+            >
+              <div class="overflow-y-auto max-h-[200px] p-2">
+                <!-- scrollable content -->
+              </div>
             </div>
           </div>
         </div>
         <!-- group request  -->
         <div
-          class="flex flex-row hover:bg-gray-500 transition cursor-pointer"
+          class="flex flex-row hover:bg-gray-500 transition cursor-pointer gap-x-[10px]"
           (click)="onGroupRequestClick()"
         >
           <mat-icon fontIcon="assignment_returned"></mat-icon>
@@ -76,7 +87,7 @@
             <circle cx="12" cy="12" r="10" fill="light-blue"></circle>
 
             <!-- Dynamic number -->
-            <text x="12" y="16" text-anchor="middle" font-size="12" fill="blue">
+            <text x="12" y="16" text-anchor="middle" font-size="12" fill="white">
               {{ groupRequestCount }}
             </text>
           </svg>

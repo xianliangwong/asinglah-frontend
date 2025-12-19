@@ -1,6 +1,8 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { Store } from '@ngrx/store';
+import { selectLoginEmail } from 'src/app/features/login/login.selector';
 
 @Component({
   selector: 'app-sidepanel',
@@ -14,9 +16,12 @@ export class SidepanelComponent {
   groupRequestCount: number;
   isExpanded!: boolean;
 
-  constructor() {
+  email!: Signal<{ email: string | null } | null>;
+
+  constructor(private store: Store) {
     this.expenseCount = 0;
     this.groupRequestCount = 0;
+    this.email = this.store.selectSignal(selectLoginEmail);
   }
 
   ngOnInit() {}

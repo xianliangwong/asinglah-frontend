@@ -13,11 +13,12 @@ export const loginReducer = createReducer(
   })),
 
   // When login succeeds → store token and update status
-  on(loadLoginSuccess, (state, { accessToken }) => ({
+  on(loadLoginSuccess, (state, { accessToken, email }) => ({
     ...state,
     accessToken: accessToken,
     status: 'success',
     error: null,
+    name: email,
   })),
 
   // When login fails → store error and update status

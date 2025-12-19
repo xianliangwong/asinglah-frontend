@@ -13,6 +13,15 @@ export const selectLoginStatus = createSelector(selectLoginState, (state) => sta
 // Select login error
 export const selectLoginError = createSelector(selectLoginState, (state) => state.error);
 
+export const selectLoginEmail = createSelector(selectLoginState, (state) => {
+  if (state.status === 'success') {
+    return {
+      email: state.name,
+    };
+  }
+  return null;
+});
+
 export const selectLoginSuccessWithToken = createSelector(selectLoginState, (state) => {
   if (state.status === 'success') {
     return {

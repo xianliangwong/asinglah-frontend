@@ -2,7 +2,7 @@ import { JoinedGroupResDTO } from 'src/app/model/responseDTO/JoinedGroupResDTO';
 
 export interface SidePanelState {
   IsLogOut: boolean;
-  expenseGroup: JoinedGroupResDTO | null;
+  expenseGroup: JoinedGroupResDTO[] | null;
   userId: number;
 }
 

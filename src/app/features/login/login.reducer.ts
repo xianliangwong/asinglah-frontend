@@ -1,5 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
-import { login, loadLoginSuccess, loadLoginFail, closeLoginFail } from './login.action';
+import {
+  login,
+  loadLoginSuccess,
+  loadLoginFail,
+  closeLoginFail,
+  rebindLoginEmail,
+} from './login.action';
 import { initState } from './login.state';
 
 export const loginReducer = createReducer(
@@ -32,5 +38,11 @@ export const loginReducer = createReducer(
     ...state,
     status: 'pending',
     error: null,
+  })),
+
+  on(rebindLoginEmail, (state, { email }) => ({
+    ...state,
+    name: email,
+    stats: 'success',
   }))
 );

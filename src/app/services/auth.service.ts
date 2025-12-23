@@ -11,7 +11,7 @@ export class AuthService {
 
   private apiUrl = 'http://localhost:8080/api/users/refreshAccessToken';
 
-  setAccessToken(token: string) {
+  setAccessToken(token: string | null) {
     this.accessToken = token;
   }
 

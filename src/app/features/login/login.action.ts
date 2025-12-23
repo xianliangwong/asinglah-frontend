@@ -11,3 +11,5 @@ export const loadLoginSuccess = createAction(
 export const loadLoginFail = createAction('[login] Load Log In Fail', props<{ status: string }>());
 
 export const closeLoginFail = createAction('[login] close Log In Fail');
+
+export const rebindLoginEmail = createAction('[login] rebind email', props<{ email: string }>());

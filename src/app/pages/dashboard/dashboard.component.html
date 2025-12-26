@@ -16,7 +16,9 @@
     ></mat-icon>
 
     <!-- Expanded Content -->
-    <div *ngIf="!isCollapsed" class="mt-4"><app-sidepanel></app-sidepanel></div>
+    <div *ngIf="!isCollapsed" class="mt-4">
+      <app-sidepanel (buttonClicked)="onAddExpenseGroup()"></app-sidepanel>
+    </div>
 
     <!-- Collapsed Content -->
     <div *ngIf="isCollapsed" class="mt-4"><p>test</p></div>
@@ -29,5 +31,22 @@
 
     <!-- ✅ Bottom Row -->
     <section class="bg-white p-4 overflow-auto">Bottom content here (scrollable)</section>
+  </div>
+</div>
+
+<div
+  *ngIf="isCreatingExpenseGroup"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm flex place-items-center justify-center z-50 border rounded-sm"
+>
+  <!-- fixed inset-0 -->
+
+  <div class="relative">
+    <app-expensegroup-form></app-expensegroup-form>
+    <button
+      class="absolute top-2 right-2 text-gray-600 hover:text-black text-xl"
+      (click)="closeForm()"
+    >
+      ✕
+    </button>
   </div>
 </div>

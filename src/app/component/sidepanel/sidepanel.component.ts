@@ -1,5 +1,5 @@
 import { CommonModule, NgClass, NgIf } from '@angular/common';
-import { Component, DestroyRef, effect, inject, Signal } from '@angular/core';
+import { Component, DestroyRef, effect, EventEmitter, inject, Output, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -31,6 +31,7 @@ export class SidepanelComponent {
 
   logout$!: Observable<boolean>;
   groupExpenseList$!: Observable<JoinedGroupResDTO[] | null>;
+  @Output() buttonClicked = new EventEmitter<void>();
 
   constructor(private store: Store, private router: Router) {
     this.expenseCount = 0;
@@ -75,7 +76,9 @@ export class SidepanelComponent {
 
   onExpenseClick() {}
 
-  onAddExpenseGroupClick() {}
+  notifyAddExpenseGroup() {
+    this.buttonClicked.emit();
+  }
 
   onExpandExpenseGroup() {
     this.isExpanded = !this.isExpanded;

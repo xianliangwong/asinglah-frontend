@@ -1,0 +1,76 @@
+<div class="w-[600px] h-[700px] bg-white border rounded-sm">
+  <div class="flex flex-col ml-5 mt-5">
+    <form [formGroup]="expenseGroupForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-[5px]">
+      <div class="flex flex-row space-x-[10px]">
+        <label for="groupNameControl" class="mb-1 w-[200px]"> Expense Group Name: </label>
+        <input
+          id="groupNameControl"
+          formControlName="groupNameControl"
+          placeholder="Enter group name"
+          class="w-[300px] h-[30px] px-3 py-2 border rounded-md"
+        />
+      </div>
+
+      <div
+        *ngIf="
+          expenseGroupForm.get('groupNameControl')?.invalid &&
+          expenseGroupForm.get('groupNameControl')?.touched && expenseGroupForm.get('groupNameControl')?.errors?.['required']
+        "
+        class="text-red-500 text-sm mt-1 flex flex-row space-x-[10px]"
+      >
+        <div class="mb-1 w-[200px]"></div>
+        <div>This field is required.</div>
+      </div>
+
+      <div class="flex flex-col gap-y-3">
+        <input formControlName="searchEmailControl" placeholder="Search email" />
+
+        <!-- Loading spinner -->
+        <div *ngIf="loading()" class="flex justify-center mt-2">
+          <div
+            class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-600"
+          ></div>
+        </div>
+        <!-- Autocomplete dropdown -->
+        <ng-container *ngIf="users$ | async as users">
+          <ul
+            class="autocomplete-list"
+            *ngIf="users.length > 0 && expenseGroupForm.get('searchEmailControl')?.value"
+          >
+            <li *ngFor="let user of users$ | async" (click)="selectUser(user)">{{ user.email }}</li>
+          </ul>
+        </ng-container>
+        <!-- No results -->
+        <div
+          *ngIf="
+            (users$ | async)?.length === 0 && expenseGroupForm.get('searchEmailControl')?.value
+          "
+        >
+          No user found
+        </div>
+      </div>
+    </form>
+
+    <!-- card  -->
+    <!-- Selected users card -->
+    <div class="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm">
+      <ng-container *ngIf="selectedUsers()">
+        <h3 class="text-lg font-semibold mb-3">Selected Users</h3>
+        <div class="flex flex-wrap gap-2">
+          <div
+            class="flex items-center bg-blue-100 px-3 py-1 rounded-full"
+            *ngFor="let user of selectedUsers(); let i = index"
+          >
+            {{ user.email }}
+            <span
+              class="ml-2 cursor-pointer text-red-500 hover:text-red-700 font-bold"
+              (click)="removeUser(user)"
+            >
+              ✖
+            </span>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

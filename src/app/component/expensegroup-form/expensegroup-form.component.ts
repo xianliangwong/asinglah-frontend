@@ -19,6 +19,7 @@ import {
   tap,
 } from 'rxjs';
 import { selectLoginEmail } from 'src/app/features/login/login.selector';
+import { loadGroups } from 'src/app/features/sidepanel/sidepanel.action';
 import { ToastSignalService } from 'src/app/features/toast/ToastSignalService';
 import { CreateExpenseGrpDTO } from 'src/app/model/requestDTO/CreateExpenseGrpDTO';
 import { UserDTO } from 'src/app/model/responseDTO/UsersDTO';
@@ -104,6 +105,7 @@ export class ExpensegroupFormComponent {
               this.toastSignalService.show('Group created!', 'success');
               this.resetForms();
               this.closeButtonClicked.emit();
+              this.store.dispatch(loadGroups({ email: String(this.email()?.email) }));
               //this.groupCreated = true;
             }),
             catchError((err) => {

@@ -8,3 +8,17 @@
     @apply text-4xl font-serif font-bold tracking-wide text-gray-900 dark:text-gray-50;
   }
 }
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.toast {
+  animation: slideIn 0.3s ease-out;
+}

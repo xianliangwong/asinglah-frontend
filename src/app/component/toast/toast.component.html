@@ -1,0 +1,12 @@
+<div
+  *ngIf="toast() as t"
+  class="fixed bottom-5 right-5 max-w-sm px-4 py-2 rounded shadow-lg transition-opacity toast z-100"
+  [ngClass]="{
+    'bg-green-500 text-white': t.type === 'success',
+    'bg-red-500 text-white': t.type === 'fail',
+    'bg-blue-500 text-white': t.type === 'info'
+  }"
+>
+  {{ t.message }}
+  <button class="ml-2 text-sm underline" (click)="dismiss()">Dismiss</button>
+</div>

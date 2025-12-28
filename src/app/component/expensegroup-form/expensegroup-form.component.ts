@@ -1,20 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, Signal } from '@angular/core';
+import { Component, EventEmitter, Output, signal, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
+  EMPTY,
+  exhaustMap,
   filter,
   map,
   Observable,
   of,
+  Subject,
+  Subscription,
   switchMap,
   tap,
 } from 'rxjs';
 import { selectLoginEmail } from 'src/app/features/login/login.selector';
+import { ToastSignalService } from 'src/app/features/toast/ToastSignalService';
+import { CreateExpenseGrpDTO } from 'src/app/model/requestDTO/CreateExpenseGrpDTO';
 import { UserDTO } from 'src/app/model/responseDTO/UsersDTO';
+import { ExpenseGroupService } from 'src/app/services/expenseGroup.service';
 import { UserService } from 'src/app/services/users.service';
 
 @Component({
@@ -34,13 +42,39 @@ export class ExpensegroupFormComponent {
 
   email: Signal<{ email: string | null } | null>;
 
+  ownerId: Signal<number | null>;
+
+  private sub?: Subscription;
+
+  private submit$ = new Subject<CreateExpenseGrpDTO>();
+
+  @Output() closeButtonClicked = new EventEmitter<void>();
+
   expenseGroupForm = new FormGroup({
     groupNameControl: new FormControl('', [Validators.required]),
-    searchEmailControl: new FormControl('', [Validators.required, Validators.email]),
+    searchEmailControl: new FormControl('', [Validators.required]),
   });
 
-  constructor(private userService: UserService, private store: Store) {
+  constructor(
+    private userService: UserService,
+    private store: Store,
+    private toastSignalService: ToastSignalService,
+    private groupExpenseService: ExpenseGroupService
+  ) {
     this.email = this.store.selectSignal(selectLoginEmail);
+    // this.ownerId=this.userService.getUserId(String(this.email()?.email)).pipe(map(
+    //   (apiReponse)=>{
+    //     apiReponse.data.userId
+    //   }
+    // )
+
+    // )
+    this.ownerId = toSignal(
+      this.userService
+        .getUserId(String(this.email()?.email))
+        .pipe(map((apiResponse) => apiResponse.data.userId)),
+      { initialValue: null }
+    );
   }
 
   ngOnInit() {
@@ -60,9 +94,47 @@ export class ExpensegroupFormComponent {
         )
       )
     );
+
+    //event emitter for subject to post create group expense
+    this.sub = this.submit$
+      .pipe(
+        exhaustMap((dto) =>
+          this.groupExpenseService.createGroupExpense(dto).pipe(
+            tap(() => {
+              this.toastSignalService.show('Group created!', 'success');
+              this.resetForms();
+              this.closeButtonClicked.emit();
+              //this.groupCreated = true;
+            }),
+            catchError((err) => {
+              this.toastSignalService.show('Failed to create group', 'fail');
+              return EMPTY;
+            })
+          )
+        )
+      )
+      .subscribe();
   }
 
-  onSubmit() {}
+  onSubmit() {
+    if (this.selectedUsers.length == 0) {
+      //can set for validation on whether group member is populated
+    }
+
+    if (this.expenseGroupForm.invalid) {
+      this.toastSignalService.show('invalid forms value', 'fail');
+      return;
+    }
+
+    const requestDTO: CreateExpenseGrpDTO = {
+      groupName: String(this.expenseGroupForm.get('groupNameControl')!.value),
+      groupOwnerId: Number(this.ownerId()),
+      listOfMembers: this.selectedUsers().map((user) => user.userId),
+    };
+
+    //triggered event to subject
+    this.submit$.next(requestDTO);
+  }
 
   selectUser(user: UserDTO) {
     this.selectedUsers.update((users) => {
@@ -78,5 +150,14 @@ export class ExpensegroupFormComponent {
     });
 
     //this.selectedUsers.update(users => users.filter(u => u.email !== user.email) // keep all except the one to remove );
+  }
+
+  resetForms() {
+    this.expenseGroupForm.reset(); // clear form values
+    this.selectedUsers.set([]); // clear members if using signals
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
   }
 }

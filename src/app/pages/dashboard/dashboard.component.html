@@ -41,7 +41,7 @@
   <!-- fixed inset-0 -->
 
   <div class="relative">
-    <app-expensegroup-form></app-expensegroup-form>
+    <app-expensegroup-form (closeButtonClicked)="closeForm()"></app-expensegroup-form>
     <button
       class="absolute top-2 right-2 text-gray-600 hover:text-black text-xl"
       (click)="closeForm()"

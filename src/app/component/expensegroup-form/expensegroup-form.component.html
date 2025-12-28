@@ -1,4 +1,4 @@
-<div class="w-[600px] h-[700px] bg-white border rounded-sm">
+<div class="w-[600px] h-[650px] bg-white border rounded-sm">
   <div class="flex flex-col ml-5 mt-5">
     <form [formGroup]="expenseGroupForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-[5px]">
       <div class="flex flex-row space-x-[10px]">
@@ -22,8 +22,8 @@
         <div>This field is required.</div>
       </div>
 
-      <div class="flex flex-col gap-y-3">
-        <input formControlName="searchEmailControl" placeholder="Search email" />
+      <div class="flex flex-col gap-y-3 mt-[30px]">
+        <input formControlName="searchEmailControl" placeholder="Search email" class="w-[180px]" />
 
         <!-- Loading spinner -->
         <div *ngIf="loading()" class="flex justify-center mt-2">
@@ -37,7 +37,13 @@
             class="autocomplete-list"
             *ngIf="users.length > 0 && expenseGroupForm.get('searchEmailControl')?.value"
           >
-            <li *ngFor="let user of users$ | async" (click)="selectUser(user)">{{ user.email }}</li>
+            <li
+              *ngFor="let user of users$ | async"
+              (click)="selectUser(user)"
+              class="hover:bg-gray-300 transition cursor-pointer w-fit"
+            >
+              {{ user.email }}
+            </li>
           </ul>
         </ng-container>
         <!-- No results -->
@@ -49,11 +55,42 @@
           No user found
         </div>
       </div>
+
+      <!-- card  -->
+      <!-- Selected users card -->
+      <div
+        class="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm w-[300px] h-[400px]"
+      >
+        <ng-container *ngIf="selectedUsers()">
+          <h3 class="text-lg font-semibold mb-3">Selected Users</h3>
+          <div class="flex flex-wrap gap-2">
+            <div
+              class="flex items-center bg-blue-100 px-3 py-1 rounded-full"
+              *ngFor="let user of selectedUsers(); let i = index"
+            >
+              {{ user.email }}
+              <span
+                class="ml-2 cursor-pointer text-red-500 hover:text-red-700 font-bold"
+                (click)="removeUser(user)"
+              >
+                ✖
+              </span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <button
+        type="submit"
+        class="w-[150px] mx-auto mt-[15px] px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+      >
+        Submit
+      </button>
     </form>
 
     <!-- card  -->
     <!-- Selected users card -->
-    <div class="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm">
+    <!-- <div class="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm">
       <ng-container *ngIf="selectedUsers()">
         <h3 class="text-lg font-semibold mb-3">Selected Users</h3>
         <div class="flex flex-wrap gap-2">
@@ -71,6 +108,6 @@
           </div>
         </div>
       </ng-container>
-    </div>
+    </div> -->
   </div>
 </div>

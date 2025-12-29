@@ -14,7 +14,7 @@ import { SidePanelEffects } from './features/sidepanel/sidepanel.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideStore({ login: loginReducer, sidepanel: sidepanelReducer }),
+    provideStore({ login: loginReducer, sidepanel: sidepanelReducer }), //eager loading
     provideEffects(),
     provideEffects([LoginEffects, SidePanelEffects]),
     provideRouter(routes),

@@ -51,7 +51,7 @@
                   <mat-icon
                     class="hover:bg-gray-400 transition cursor-pointer"
                     fontIcon="add"
-                    (click)="onAddExpenseGroupClick()"
+                    (click)="notifyAddExpenseGroup()"
                   ></mat-icon>
 
                   <mat-icon
@@ -76,7 +76,6 @@
                   <li *ngFor="let item of groupExpenseList$ | async" class="py-1 border-b">
                     {{ item.groupName }}
                   </li>
-                  <li>test</li>
                 </ul>
               </div>
             </div>

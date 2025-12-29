@@ -57,7 +57,6 @@ export class SidePanelEffects {
             this.expenseGroupService.getGroupsExpenseByUserId(userId).pipe(
               map((groups) => loadListExpenseGroups({ requestDTO: groups.data })),
               catchError((error) => {
-                console.log('error in getting expense groups ' + error);
                 return of();
               })
             )

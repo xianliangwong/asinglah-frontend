@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { GroupInvitationResDTO } from 'src/app/model/responseDTO/groupInvitationResDTO';
 import { JoinedGroupResDTO } from 'src/app/model/responseDTO/JoinedGroupResDTO';
 
 export const loadLogOut = createAction('[logout] logout clicked');
@@ -18,3 +19,12 @@ export const loadListExpenseGroups = createAction(
 );
 
 export const resetState = createAction('[logout] reset state');
+
+export const clickedGroupsInvList = createAction(
+  '[expense group] triggered effects for service request'
+);
+
+export const loadListGroupInvitation = createAction(
+  '[expense group] load list of expense groups invitation list',
+  props<{ requestDTO: GroupInvitationResDTO[] }>()
+);

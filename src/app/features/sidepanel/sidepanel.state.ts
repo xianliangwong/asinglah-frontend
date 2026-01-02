@@ -1,13 +1,16 @@
+import { GroupInvitationResDTO } from 'src/app/model/responseDTO/groupInvitationResDTO';
 import { JoinedGroupResDTO } from 'src/app/model/responseDTO/JoinedGroupResDTO';
 
 export interface SidePanelState {
-  IsLogOut: boolean;
+  isLogOut: boolean;
   expenseGroup: JoinedGroupResDTO[] | null;
   userId: number;
+  groupInvList: GroupInvitationResDTO[] | null;
 }
 
 export const initState: SidePanelState = {
-  IsLogOut: false,
+  isLogOut: false,
   expenseGroup: null,
   userId: 0,
+  groupInvList: null,
 };

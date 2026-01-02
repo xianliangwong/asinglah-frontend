@@ -7,12 +7,12 @@ export const sidepanelReducer = createReducer(
 
   on(loadSuccessLogOut, (state) => ({
     ...state,
-    IsLogOut: true,
+    isLogOut: true,
   })),
 
   on(resetState, (state) => ({
     ...state,
-    IsLogOut: false,
+    isLogOut: false,
   })),
 
   on(loadListExpenseGroups, (state, { requestDTO }) => ({

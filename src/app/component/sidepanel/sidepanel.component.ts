@@ -10,7 +10,12 @@ import {
 } from 'src/app/features/sidepanel/sidepanel.selector';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { loadGroups, loadLogOut, resetState } from 'src/app/features/sidepanel/sidepanel.action';
+import {
+  clickedGroupsInvList,
+  loadGroups,
+  loadLogOut,
+  resetState,
+} from 'src/app/features/sidepanel/sidepanel.action';
 import { rebindLoginEmail } from 'src/app/features/login/login.action';
 import { JoinedGroupResDTO } from 'src/app/model/responseDTO/JoinedGroupResDTO';
 
@@ -84,7 +89,10 @@ export class SidepanelComponent {
     this.isExpanded = !this.isExpanded;
   }
 
-  onGroupRequestClick() {}
+  onGroupRequestClick() {
+    //dispatch action
+    this.store.dispatch(clickedGroupsInvList());
+  }
 
   onLogOutClick() {
     this.store.dispatch(loadLogOut());

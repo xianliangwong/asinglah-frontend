@@ -13,6 +13,11 @@ export const loadGroups = createAction(
   props<{ email: string }>()
 );
 
+export const loadUserId = createAction(
+  '[expense group] load user id to sidepanel states',
+  props<{ userId: number }>()
+);
+
 export const loadListExpenseGroups = createAction(
   '[expense group] load the list of expensegroups',
   props<{ requestDTO: JoinedGroupResDTO[] }>()
@@ -23,6 +28,8 @@ export const resetState = createAction('[logout] reset state');
 export const clickedGroupsInvList = createAction(
   '[expense group] triggered effects for service request'
 );
+
+export const exitGroupsInvList = createAction('[expense group] exit group inv list');
 
 export const loadListGroupInvitation = createAction(
   '[expense group] load list of expense groups invitation list',

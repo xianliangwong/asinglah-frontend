@@ -5,6 +5,7 @@ import { APIResponse } from '../model/responseDTO/APIResponse';
 import { JoinedGroupResDTO } from '../model/responseDTO/JoinedGroupResDTO';
 import { CreateExpenseGrpDTO } from '../model/requestDTO/CreateExpenseGrpDTO';
 import { CreateExpenseGrpResponse } from '../model/responseDTO/CreateExpenseGrpResponse';
+import { GroupInvitationResDTO } from '../model/responseDTO/groupInvitationResDTO';
 
 @Injectable({ providedIn: 'root' })
 export class ExpenseGroupService {
@@ -21,5 +22,12 @@ export class ExpenseGroupService {
     requestDTO: CreateExpenseGrpDTO
   ): Observable<APIResponse<CreateExpenseGrpResponse>> {
     return this.http.post<APIResponse<CreateExpenseGrpResponse>>(this.apiUrl, requestDTO);
+  }
+
+  getGroupInvListByUserId(userId: number): Observable<APIResponse<GroupInvitationResDTO[]>> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.get<APIResponse<GroupInvitationResDTO[]>>(this.apiUrl + '/invitation', {
+      params,
+    });
   }
 }

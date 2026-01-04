@@ -1,18 +1,22 @@
-import { CommonModule, NgClass, NgIf } from '@angular/common';
-import { Component, DestroyRef, effect, EventEmitter, inject, Output, Signal } from '@angular/core';
+import { CommonModule, NgClass } from '@angular/common';
+import { Component, DestroyRef, EventEmitter, inject, Output, signal, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectLoginEmail } from 'src/app/features/login/login.selector';
 import {
   selectExpenseGroupByUserId,
+  selectGroupInvClickState,
+  selectGroupInvListCount,
   selectLogOut,
+  selectUserId,
 } from 'src/app/features/sidepanel/sidepanel.selector';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import {
   clickedGroupsInvList,
   loadGroups,
+  loadListExpenseGroups,
   loadLogOut,
   resetState,
 } from 'src/app/features/sidepanel/sidepanel.action';
@@ -28,10 +32,11 @@ import { JoinedGroupResDTO } from 'src/app/model/responseDTO/JoinedGroupResDTO';
 })
 export class SidepanelComponent {
   expenseCount: number;
-  groupRequestCount: number;
+  groupRequestCountSignals!: Signal<number>;
   isExpanded: boolean = false;
 
   email: Signal<{ email: string | null } | null>;
+  userId!: Signal<number>;
   private destroyRef = inject(DestroyRef);
 
   logout$!: Observable<boolean>;
@@ -40,7 +45,6 @@ export class SidepanelComponent {
 
   constructor(private store: Store, private router: Router) {
     this.expenseCount = 0;
-    this.groupRequestCount = 0;
     this.email = this.store.selectSignal(selectLoginEmail);
     //step 1: need to get userid from email , by dispatching action to get effect on api endpoint
     //step 2: once recevied user id, send to get all the expense group in which the user is in the group with
@@ -72,7 +76,9 @@ export class SidepanelComponent {
       //dispatch action get userid
       this.store.dispatch(loadGroups({ email: String(this.email()?.email) }));
       this.groupExpenseList$ = this.store.select(selectExpenseGroupByUserId);
+      this.userId = this.store.selectSignal(selectUserId);
     }
+    this.groupRequestCountSignals = this.store.selectSignal(selectGroupInvListCount);
   }
 
   onDashboardClick() {

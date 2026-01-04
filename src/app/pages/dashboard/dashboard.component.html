@@ -50,3 +50,21 @@
     </button>
   </div>
 </div>
+
+<!-- div for group invitation list -->
+<div
+  *ngIf="isGroupInvListSelected()"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm flex place-items-center justify-center z-40 border rounded-sm"
+>
+  <!-- fixed inset-0 -->
+
+  <div class="relative">
+    <app-grouprequest-list></app-grouprequest-list>
+    <button
+      class="absolute top-2 right-2 text-gray-600 hover:text-black text-xl"
+      (click)="closeGroupInvList()"
+    >
+      ✕
+    </button>
+  </div>
+</div>

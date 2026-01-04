@@ -6,6 +6,7 @@ export interface SidePanelState {
   expenseGroup: JoinedGroupResDTO[] | null;
   userId: number;
   groupInvList: GroupInvitationResDTO[] | null;
+  isGroupInvClicked: boolean;
 }
 
 export const initState: SidePanelState = {
@@ -13,4 +14,5 @@ export const initState: SidePanelState = {
   expenseGroup: null,
   userId: 0,
   groupInvList: null,
+  isGroupInvClicked: false,
 };

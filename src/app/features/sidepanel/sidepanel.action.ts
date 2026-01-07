@@ -1,4 +1,6 @@
 import { createAction, props } from '@ngrx/store';
+import { UpdateExpenseGroupInv } from 'src/app/model/requestDTO/ExpenseGroupDTO/UpdateStatus-groupMember.dto';
+
 import { GroupInvitationResDTO } from 'src/app/model/responseDTO/groupInvitationResDTO';
 import { JoinedGroupResDTO } from 'src/app/model/responseDTO/JoinedGroupResDTO';
 
@@ -34,4 +36,14 @@ export const exitGroupsInvList = createAction('[expense group] exit group inv li
 export const loadListGroupInvitation = createAction(
   '[expense group] load list of expense groups invitation list',
   props<{ requestDTO: GroupInvitationResDTO[] }>()
+);
+
+export const updateExpenseGroupInv = createAction(
+  '[expense group] update expense group invitation status id',
+  props<{ requestDTO: UpdateExpenseGroupInv }>()
+);
+
+export const updateListGroupInvitation = createAction(
+  '[expense group] update expense group invitation list',
+  props<{ groupId: number }>()
 );

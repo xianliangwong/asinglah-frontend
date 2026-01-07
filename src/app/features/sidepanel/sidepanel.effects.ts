@@ -3,7 +3,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { exhaustMap, map } from 'rxjs';
 import { LogOutService } from 'src/app/services/logout.service';
 import {
-  clickedGroupsInvList,
   loadFailLogOut,
   loadGroups,
   loadListExpenseGroups,
@@ -11,6 +10,8 @@ import {
   loadLogOut,
   loadSuccessLogOut,
   loadUserId,
+  updateExpenseGroupInv,
+  updateListGroupInvitation,
 } from './sidepanel.action';
 import { of } from 'rxjs';
 import { catchError, concatMap, mergeMap, tap } from 'rxjs/operators';
@@ -102,6 +103,18 @@ export class SidePanelEffects {
         this.expenseGroupService.getGroupInvListByUserId(userId).pipe(
           map((apiResponse) => loadListGroupInvitation({ requestDTO: apiResponse.data })),
           catchError((error) => of())
+        )
+      )
+    )
+  );
+
+  updateGroupInv$ = createEffect(() =>
+    this.sidePanelAction$.pipe(
+      ofType(updateExpenseGroupInv),
+      exhaustMap(({ requestDTO }) =>
+        this.expenseGroupService.updateGroupInv(requestDTO).pipe(
+          map((APIResponse) => updateListGroupInvitation({ groupId: APIResponse.data.groupId })),
+          catchError(() => of())
         )
       )
     )

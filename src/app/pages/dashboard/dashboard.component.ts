@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { ExpensegroupFormComponent } from 'src/app/component/expensegroup-form/expensegroup-form.component';
 import { selectGroupInvClickState } from 'src/app/features/sidepanel/sidepanel.selector';
 import { GrouprequestListComponent } from 'src/app/component/grouprequest-list/grouprequest-list.component';
+import { exitGroupsInvList } from 'src/app/features/sidepanel/sidepanel.action';
 
 @Component({
   selector: 'app-dashboard',
@@ -55,5 +56,7 @@ export class DashboardComponent {
     //dispatch action to get back count for list of expense groups
   }
 
-  closeGroupInvList() {}
+  closeGroupInvList() {
+    this.store.dispatch(exitGroupsInvList());
+  }
 }

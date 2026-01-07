@@ -1,6 +1,6 @@
 export interface GroupInvitationResDTO {
   groupName: string;
-  groupId: number;
+  expenseGroupId: number;
   invitor: string;
-  invDateTime: string;
+  invitationDateTime: string;
 }

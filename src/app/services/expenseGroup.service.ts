@@ -6,6 +6,8 @@ import { JoinedGroupResDTO } from '../model/responseDTO/JoinedGroupResDTO';
 import { CreateExpenseGrpDTO } from '../model/requestDTO/CreateExpenseGrpDTO';
 import { CreateExpenseGrpResponse } from '../model/responseDTO/CreateExpenseGrpResponse';
 import { GroupInvitationResDTO } from '../model/responseDTO/groupInvitationResDTO';
+import { UpdateExpenseGroupInv } from '../model/requestDTO/ExpenseGroupDTO/UpdateStatus-groupMember.dto';
+import { UpdateExpenseGroupInvRes } from '../model/responseDTO/UpdateStatus-groupMember.dto';
 
 @Injectable({ providedIn: 'root' })
 export class ExpenseGroupService {
@@ -29,5 +31,14 @@ export class ExpenseGroupService {
     return this.http.get<APIResponse<GroupInvitationResDTO[]>>(this.apiUrl + '/invitation', {
       params,
     });
+  }
+
+  updateGroupInv(
+    requestDTO: UpdateExpenseGroupInv
+  ): Observable<APIResponse<UpdateExpenseGroupInvRes>> {
+    return this.http.put<APIResponse<UpdateExpenseGroupInvRes>>(
+      this.apiUrl + '/invitation',
+      requestDTO
+    );
   }
 }

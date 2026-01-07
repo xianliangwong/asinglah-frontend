@@ -8,6 +8,7 @@ import {
   loadSuccessLogOut,
   loadUserId,
   resetState,
+  updateListGroupInvitation,
 } from './sidepanel.action';
 
 export const sidepanelReducer = createReducer(
@@ -38,7 +39,6 @@ export const sidepanelReducer = createReducer(
   on(exitGroupsInvList, (state) => ({
     ...state,
     isGroupInvClicked: false,
-    groupInvList: null,
   })),
 
   on(loadUserId, (state, { userId }) => ({
@@ -49,5 +49,9 @@ export const sidepanelReducer = createReducer(
   on(clickedGroupsInvList, (state) => ({
     ...state,
     isGroupInvClicked: true,
+  })),
+  on(updateListGroupInvitation, (state, { groupId }) => ({
+    ...state,
+    groupInvList: state.groupInvList!.filter((itm) => itm.expenseGroupId !== groupId),
   }))
 );

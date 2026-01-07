@@ -1,35 +1,84 @@
-<div class="w-[600px] h-[550px] bg-white border-gray-400 rounded-sm shadow-lg">
+<div
+  class="w-[700px] h-[550px] bg-white border-gray-400 rounded-sm shadow-lg grid grid-rows-[90%_10%]"
+>
   <div class="flex flex-col">
-    <div class="flex flex-col space-y-3">
+    <div class="flex flex-col space-y-3 mt-6 ml-6">
+      <div class="flex">
+        <ul>
+          <li
+            class="flex justify-between items-center w-[630px] bg-gray-200 p-3 rounded-t shadow font-semibold"
+          >
+            <span class="text-gray-900">Group Name</span>
+            <span class="text-gray-900">Invitor</span>
+            <span class="text-gray-900">Invitation Date</span>
+            <span class="text-gray-900">Actions</span>
+          </li>
+        </ul>
+      </div>
       <div class="flex">
         <!-- List -->
         <ul class="space-y-3">
           <li
             *ngFor="let item of pagedItems$ | async"
-            class="flex justify-between items-center bg-gray-100 p-3 rounded shadow"
+            class="flex justify-between items-center w-[630px] bg-gray-100 p-3 rounded shadow"
           >
-            <span class="text-gray-800 font-medium">{{ item.groupName }}</span>
+            <span class="text-gray-800 font-medium whitespace-normal break-words">{{
+              item.groupName
+            }}</span>
 
-            <button class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full">
-              <!-- Heroicons check icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+            <span class="text-gray-800 font-medium whitespace-normal break-words">{{
+              item.invitor
+            }}</span>
+
+            <span class="text-gray-800 font-medium whitespace-normal break-words">{{
+              item.invitationDateTime.substring(0, 16)
+            }}</span>
+
+            <div class="space-x-2">
+              <button
+                class="inline-block bg-green-500 hover:bg-green-600 text-white p-2 rounded-full"
+                (click)="clickAcceptInv(item.expenseGroupId)"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </button>
+                accept
+              </button>
+
+              <button
+                class="inline-block bg-red-600 hover:bg-red-400 text-white p-2 rounded-full"
+                (click)="clickRejectInv(item.expenseGroupId)"
+              >
+                reject
+              </button>
+            </div>
           </li>
         </ul>
       </div>
     </div>
+  </div>
+  <!-- Paginator -->
+  <div class="flex justify-center items-center space-x-2">
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 0"
+      class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+    >
+      Prev
+    </button>
+    <ng-container *ngFor="let page of totalPagesArray$ | async; let i = index">
+      <button
+        (click)="goToPage(i)"
+        [class.bg-blue-500]="i === currentPage"
+        [class.text-white]="i === currentPage"
+        class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-400"
+      >
+        {{ i + 1 }}
+      </button>
+    </ng-container>
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage >= ((totalPages$ | async) ?? 1) - 1"
+      class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+    >
+      Next
+    </button>
   </div>
 </div>

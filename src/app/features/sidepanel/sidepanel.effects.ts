@@ -3,7 +3,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { exhaustMap, map } from 'rxjs';
 import { LogOutService } from 'src/app/services/logout.service';
 import {
-  clickedGroupsInvList,
   loadFailLogOut,
   loadGroups,
   loadListExpenseGroups,
@@ -11,12 +10,15 @@ import {
   loadLogOut,
   loadSuccessLogOut,
   loadUserId,
+  updateExpenseGroupInv,
+  updateListGroupInvitation,
 } from './sidepanel.action';
 import { of } from 'rxjs';
 import { catchError, concatMap, mergeMap, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/users.service';
 import { ExpenseGroupService } from 'src/app/services/expenseGroup.service';
+import { ToastSignalService } from '../toast/ToastSignalService';
 
 @Injectable()
 export class SidePanelEffects {
@@ -26,7 +28,8 @@ export class SidePanelEffects {
     private logOutService: LogOutService,
     private authService: AuthService,
     private userService: UserService,
-    private expenseGroupService: ExpenseGroupService
+    private expenseGroupService: ExpenseGroupService,
+    private toastSignalService: ToastSignalService
   ) {}
 
   logOut$ = createEffect(() =>
@@ -102,6 +105,25 @@ export class SidePanelEffects {
         this.expenseGroupService.getGroupInvListByUserId(userId).pipe(
           map((apiResponse) => loadListGroupInvitation({ requestDTO: apiResponse.data })),
           catchError((error) => of())
+        )
+      )
+    )
+  );
+
+  updateGroupInv$ = createEffect(() =>
+    this.sidePanelAction$.pipe(
+      ofType(updateExpenseGroupInv),
+      exhaustMap(({ requestDTO }) =>
+        this.expenseGroupService.updateGroupInv(requestDTO).pipe(
+          map((APIResponse) => updateListGroupInvitation({ groupId: APIResponse.data.groupId })),
+          tap(() => {
+            if (requestDTO.statusId === 2) {
+              this.toastSignalService.show('Accepted group invitation', 'info');
+            } else if (requestDTO.statusId === 3) {
+              this.toastSignalService.show('Rejected group invitation', 'info');
+            }
+          }),
+          catchError(() => of())
         )
       )
     )

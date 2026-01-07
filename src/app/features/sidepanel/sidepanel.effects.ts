@@ -18,6 +18,7 @@ import { catchError, concatMap, mergeMap, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/users.service';
 import { ExpenseGroupService } from 'src/app/services/expenseGroup.service';
+import { ToastSignalService } from '../toast/ToastSignalService';
 
 @Injectable()
 export class SidePanelEffects {
@@ -27,7 +28,8 @@ export class SidePanelEffects {
     private logOutService: LogOutService,
     private authService: AuthService,
     private userService: UserService,
-    private expenseGroupService: ExpenseGroupService
+    private expenseGroupService: ExpenseGroupService,
+    private toastSignalService: ToastSignalService
   ) {}
 
   logOut$ = createEffect(() =>
@@ -114,6 +116,13 @@ export class SidePanelEffects {
       exhaustMap(({ requestDTO }) =>
         this.expenseGroupService.updateGroupInv(requestDTO).pipe(
           map((APIResponse) => updateListGroupInvitation({ groupId: APIResponse.data.groupId })),
+          tap(() => {
+            if (requestDTO.statusId === 2) {
+              this.toastSignalService.show('Accepted group invitation', 'info');
+            } else if (requestDTO.statusId === 3) {
+              this.toastSignalService.show('Rejected group invitation', 'info');
+            }
+          }),
           catchError(() => of())
         )
       )

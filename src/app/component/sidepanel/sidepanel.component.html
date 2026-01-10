@@ -73,7 +73,11 @@
               <div class="overflow-y-auto max-h-[200px] p-2">
                 <!-- scrollable content -->
                 <ul>
-                  <li *ngFor="let item of groupExpenseList$ | async" class="py-1 border-b">
+                  <li
+                    *ngFor="let item of groupExpenseList$ | async"
+                    class="py-1 border-b hover:cursor-pointer"
+                    (click)="onExpenseGroupClick(item.expenseGroupId)"
+                  >
                     {{ item.groupName }}
                   </li>
                 </ul>

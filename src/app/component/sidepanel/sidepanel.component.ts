@@ -100,6 +100,11 @@ export class SidepanelComponent {
     this.store.dispatch(clickedGroupsInvList());
   }
 
+  onExpenseGroupClick(groupId: number) {
+    //navigate to expense group page
+    this.router.navigate(['expensegroup', groupId]);
+  }
+
   onLogOutClick() {
     this.store.dispatch(loadLogOut());
     localStorage.removeItem('email');

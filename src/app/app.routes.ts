@@ -4,6 +4,8 @@ import { provideEffects } from '@ngrx/effects';
 import { loginReducer } from './features/login/login.reducer';
 import { LoginEffects } from './features/login/login.effects';
 import { AuthGuard } from './helper/auth.guard';
+import { expenseReducer } from './features/expense-page/expense.reducer';
+import { ExpenseEffects } from './features/expense-page/expense.effects';
 
 export const routes: Routes = [
   // {
@@ -40,6 +42,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     loadComponent: () =>
       import('./pages/expense-page/expense-page.component').then((m) => m.ExpensePageComponent),
+    providers: [provideState('expense', expenseReducer), provideEffects(ExpenseEffects)],
   },
   {
     path: '**',

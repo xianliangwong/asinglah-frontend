@@ -1,7 +1,7 @@
 export interface ExpenseState {
-  temp: String;
+  IsSelectedExpenseForm: boolean;
 }
 
 export const initState: ExpenseState = {
-  temp: '',
+  IsSelectedExpenseForm: false,
 };

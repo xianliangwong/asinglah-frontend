@@ -9,6 +9,57 @@
   }
 }
 
+/* Custom font families */
+@layer utilities {
+  .font-sans {
+    font-family: 'Inter', 'Helvetica', 'Arial', sans-serif;
+  }
+  .font-serif {
+    font-family: 'Merriweather', serif;
+  }
+  .font-mono {
+    font-family: 'Fira Code', monospace;
+  }
+} /* Custom font sizes (Google Docs style) */
+@layer utilities {
+  .text-8pt {
+    font-size: 0.67rem;
+    line-height: 1rem;
+  }
+  .text-10pt {
+    font-size: 0.83rem;
+    line-height: 1.2rem;
+  }
+  .text-11pt {
+    font-size: 0.92rem;
+    line-height: 1.3rem;
+  }
+  .text-12pt {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  .text-14pt {
+    font-size: 1.17rem;
+    line-height: 1.6rem;
+  }
+  .text-18pt {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  .text-24pt {
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+  .text-36pt {
+    font-size: 3rem;
+    line-height: 3.5rem;
+  }
+  .text-48pt {
+    font-size: 4rem;
+    line-height: 1.2;
+  }
+}
+
 @keyframes slideIn {
   from {
     transform: translateY(20px);

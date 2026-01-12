@@ -1,12 +1,20 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component, signal, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { ExpensegroupFormComponent } from 'src/app/component/expensegroup-form/expensegroup-form.component';
 import { GrouprequestListComponent } from 'src/app/component/grouprequest-list/grouprequest-list.component';
 import { SidepanelComponent } from 'src/app/component/sidepanel/sidepanel.component';
+import {
+  clickedCloseExpense,
+  clickedCreateExpense,
+} from 'src/app/features/expense-page/expense.action';
+import { selectClickedExpenseForm } from 'src/app/features/expense-page/expense.selector';
 import { exitGroupsInvList } from 'src/app/features/sidepanel/sidepanel.action';
 import { selectGroupInvClickState } from 'src/app/features/sidepanel/sidepanel.selector';
+import { ExpenseFormComponent } from 'src/app/component/expense-form/expense-form.component';
 
 @Component({
   selector: 'app-expense-page',
@@ -18,20 +26,33 @@ import { selectGroupInvClickState } from 'src/app/features/sidepanel/sidepanel.s
     MatIconModule,
     ExpensegroupFormComponent,
     GrouprequestListComponent,
+    MatIconModule,
+    ExpenseFormComponent,
   ],
   templateUrl: './expense-page.component.html',
   styleUrl: './expense-page.component.css',
 })
 export class ExpensePageComponent {
+  //side panel's var
   isCollapsed: boolean;
-
   isCreatingExpenseGroup: boolean = false;
-
   isGroupInvListSelected: Signal<boolean> = signal(false);
+  //
 
-  constructor(private store: Store) {
+  expenseGroupId!: number;
+  expenseGroupName!: string;
+
+  clickedCreateExpenseButton!: Observable<boolean>;
+
+  constructor(private store: Store, private route: ActivatedRoute) {
     this.isCollapsed = false;
     this.isGroupInvListSelected = this.store.selectSignal(selectGroupInvClickState);
+  }
+
+  ngOnInit() {
+    this.expenseGroupId = Number(this.route.snapshot.paramMap.get('id')!);
+    this.expenseGroupName = this.route.snapshot.paramMap.get('groupName')!;
+    this.clickedCreateExpenseButton = this.store.select(selectClickedExpenseForm);
   }
 
   //#region sidepanel
@@ -55,4 +76,12 @@ export class ExpensePageComponent {
   }
 
   //#endregion
+
+  closeExpenseForm() {
+    this.store.dispatch(clickedCloseExpense());
+  }
+
+  addExpense() {
+    this.store.dispatch(clickedCreateExpense());
+  }
 }

@@ -100,9 +100,9 @@ export class SidepanelComponent {
     this.store.dispatch(clickedGroupsInvList());
   }
 
-  onExpenseGroupClick(groupId: number) {
+  onExpenseGroupClick(groupId: number, groupName: string) {
     //navigate to expense group page
-    this.router.navigate(['expensegroup', groupId]);
+    this.router.navigate(['expensegroup', groupId, groupName]);
   }
 
   onLogOutClick() {

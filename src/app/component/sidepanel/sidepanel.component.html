@@ -76,7 +76,7 @@
                   <li
                     *ngFor="let item of groupExpenseList$ | async"
                     class="py-1 border-b hover:cursor-pointer"
-                    (click)="onExpenseGroupClick(item.expenseGroupId)"
+                    (click)="onExpenseGroupClick(item.expenseGroupId, item.groupName)"
                   >
                     {{ item.groupName }}
                   </li>

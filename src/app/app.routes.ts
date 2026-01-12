@@ -38,7 +38,7 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   {
-    path: 'expensegroup/:id',
+    path: 'expensegroup/:id/:groupName',
     canActivate: [AuthGuard],
     loadComponent: () =>
       import('./pages/expense-page/expense-page.component').then((m) => m.ExpensePageComponent),

@@ -1,0 +1,10 @@
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { ExpenseState } from './expense.state';
+
+// Feature selector — points to the "expense" slice in provideState() in routes
+export const selectExpenseState = createFeatureSelector<ExpenseState>('expense');
+
+export const selectClickedExpenseForm = createSelector(
+  selectExpenseState,
+  (state) => state.IsSelectedExpenseForm
+);

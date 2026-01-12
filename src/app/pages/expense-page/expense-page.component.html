@@ -1,0 +1,108 @@
+<div
+  class="grid h-screen relative overflow-hidden"
+  [ngClass]="isCollapsed ? 'grid-cols-[60px_1fr]' : 'grid-cols-[300px_1fr]'"
+>
+  <aside
+    class="bg-white text-black p-4 flex flex-col transition-all duration-300 transform border-r-[3px] border-gray-300"
+    [ngClass]="isCollapsed ? 'w-[60px] relative z-50' : ' w-[300px] relative z-50 h-full shadow-xl'"
+  >
+    <!-- Collapse/Expand Icon -->
+    <mat-icon
+      class="cursor-pointer transition-transform ml-auto"
+      [ngClass]="isCollapsed ? 'rotate-180' : ''"
+      fontIcon="keyboard_double_arrow_left"
+      (click)="toggleSidePanel()"
+    ></mat-icon>
+
+    <!-- Expanded Content -->
+    <div *ngIf="!isCollapsed" class="mt-4">
+      <app-sidepanel (buttonClicked)="onAddExpenseGroup()"></app-sidepanel>
+    </div>
+
+    <!-- Collapsed Content -->
+    <div *ngIf="isCollapsed" class="mt-4"></div>
+  </aside>
+
+  <div class="h-screen grid grid-rows-[5%_30%_65%]">
+    <!-- First row: 1 columns -->
+    <div class="grid grid-cols-1">
+      <div class="">
+        <div class="p-[10px]">
+          <div class="flex flex-row">
+            <label class="flex-grow-[0.8] font-sans text-18pt">{{ expenseGroupName }}</label>
+
+            <div class="flex flex-row h-[24px] w-[180px] space-x-2 bg-white border rounded-md">
+              <mat-icon
+                class="bg-green-200 hover:bg-gray-400 transition cursor-pointer"
+                fontIcon="add"
+                (click)="addExpense()"
+              >
+              </mat-icon>
+              <label> Add new expense </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second row: 2 columns -->
+    <div class="grid grid-cols-2">
+      <div class="bg-blue-300">Column 1</div>
+      <div class="bg-blue-500">Column 2</div>
+    </div>
+
+    <!-- Third row: 1 column -->
+    <div class="grid grid-cols-1"><div class="bg-green-400">Single Column</div></div>
+  </div>
+</div>
+
+<div
+  *ngIf="isCreatingExpenseGroup"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm flex place-items-center justify-center z-40 border rounded-sm"
+>
+  <!-- fixed inset-0 -->
+
+  <div class="relative">
+    <app-expensegroup-form (closeButtonClicked)="closeForm()"></app-expensegroup-form>
+    <button
+      class="absolute top-2 right-2 text-gray-600 hover:text-black cursor-pointer text-xl"
+      (click)="closeForm()"
+    >
+      ✕
+    </button>
+  </div>
+</div>
+
+<!-- div for group invitation list -->
+<div
+  *ngIf="isGroupInvListSelected()"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm flex place-items-center justify-center z-40 border rounded-sm"
+>
+  <!-- fixed inset-0 -->
+
+  <div class="relative">
+    <app-grouprequest-list></app-grouprequest-list>
+    <button
+      class="absolute top-2 right-2 text-gray-600 hover:text-black cursor-pointer text-xl"
+      (click)="closeGroupInvList()"
+    >
+      ✕
+    </button>
+  </div>
+</div>
+
+<!-- div for adding expense form -->
+<div
+  *ngIf="clickedCreateExpenseButton | async"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm flex place-items-center justify-center z-40 border rounded-sm"
+>
+  <div class="relative">
+    <app-expense-form></app-expense-form>
+    <button
+      class="absolute top-2 right-2 text-gray-600 hover:text-black cursor-pointer text-xl"
+      (click)="closeExpenseForm()"
+    >
+      ✕
+    </button>
+  </div>
+</div>

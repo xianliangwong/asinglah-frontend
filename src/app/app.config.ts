@@ -23,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     // AuthInterceptor,
     // provideHttpClient(withInterceptorsFromDi()),
 
+    //provides http client global, along with authenticator interceptors when access token expires
     provideHttpClient(withInterceptors([AuthInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
   ],

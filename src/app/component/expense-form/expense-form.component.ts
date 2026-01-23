@@ -13,16 +13,26 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { PriceNumericOnlyDirective } from 'src/app/directive/numeric-only.directive';
 
 @Component({
   selector: 'app-expense-form',
   standalone: true,
-  imports: [CommonModule, ɵInternalFormsSharedModule, ReactiveFormsModule, MatIconModule],
+  imports: [
+    CommonModule,
+    ɵInternalFormsSharedModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    PriceNumericOnlyDirective,
+  ],
   templateUrl: './expense-form.component.html',
   styleUrl: './expense-form.component.css',
 })
 export class ExpenseFormComponent {
-  expenseForm = new FormGroup({ expenseDescription: new FormControl('', Validators.required) });
+  expenseForm = new FormGroup({
+    expenseDescription: new FormControl('', Validators.required),
+    expenseAmount: new FormControl('', Validators.required),
+  });
 
   currencyDropDown: boolean = false;
 

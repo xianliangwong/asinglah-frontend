@@ -69,7 +69,10 @@
                   <!-- Dropdown Item Option 1 (Flex row item) -->
                   <a
                     href="#"
-                    onclick="selectCurrency('MYR', '$', ''); return false;"
+                    onclick="
+                      selectCurrency('MYR', '$', '');
+                      return false;
+                    "
                     class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
                   >
@@ -87,8 +90,18 @@
                 </div>
               </div>
             </div>
+            <div class="">
+              <input
+                type="text"
+                appInputPriceNumericOnly
+                formControlName="expenseAmount"
+                class="border rounded-md border-gray-400 h-[40px] w-[100px]"
+              />
+            </div>
           </div>
         </div>
+        <!-- for date -->
+        <div></div>
       </div>
     </form>
   </div>

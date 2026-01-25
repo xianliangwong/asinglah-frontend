@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -11,6 +11,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { sidepanelReducer } from './features/sidepanel/sidepanel.reducer';
 import { SidePanelEffects } from './features/sidepanel/sidepanel.effects';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +25,7 @@ export const appConfig: ApplicationConfig = {
     // provideHttpClient(withInterceptorsFromDi()),
 
     //provides http client global, along with authenticator interceptors when access token expires
+    importProvidersFrom(BrowserAnimationsModule),
     provideHttpClient(withInterceptors([AuthInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
   ],

@@ -16,7 +16,7 @@
       </div>
       <div class="flex flex-row space-x-4">
         <div class="flex flex-col space-y-[5px]">
-          <label class="text-gray-400 text-10pt"> Amount </label>
+          <label class="expenseform-label"> Amount </label>
           <div class="flex flex-row space-x-[5px]">
             <!-- Currency Dropdown Container -->
             <div class="relative inline-block text-left">
@@ -101,7 +101,59 @@
           </div>
         </div>
         <!-- for date -->
-        <div></div>
+        <div class="flex flex-col space-y-[5px]">
+          <label class="text-gray-400 text-10pt">Date</label>
+          <div class="flex flex-row space-x-[5px] gap-x-[10px]">
+            <input
+              type="date"
+              class="border rounded-md border-gray-400 h-[40px] w-[180px]"
+              formControlName="expenseDate"
+            />
+            <div class="flex flex-row items-center">
+              <label
+                *ngIf="
+                  expenseForm.get('expenseDate')?.hasError('required') &&
+                  expenseForm.get('expenseDate')?.touched
+                "
+                class="text-red-500 text-10pt align-middle justify-center"
+                >*Date is required</label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-row space-x-4">
+        <div class="flex flex-col space-y-[20px] w-[300px]">
+          <label class="expenseform-label">Paid By</label>
+          <div class="flex flex-row space-x-[10px]">
+            <button
+              type="button"
+              (click)="onClickAddPaidBy()"
+              class="w-11 h-11 rounded-full bg-gray-300 hover cursor-pointer"
+            >
+              <mat-icon class="mt-2 w-10 h-10" fontIcon="add"></mat-icon>
+            </button>
+          </div>
+          <div
+            *ngIf="paidByButton | async"
+            class="flex flex-col space-y-[8px] h-[300px] w-[300px] border border-gray-400 rounded-sm"
+          >
+            test
+          </div>
+        </div>
+        <div class="flex flex-col space-y-[20px] w-[300px]">
+          <label class="expenseform-label">Split Amongst</label>
+          <div class="flex flex-row space-x-[10px]">
+            <button
+              type="button"
+              (click)="onClickSplitAmonst()"
+              class="w-11 h-11 rounded-full bg-gray-300 hover cursor-pointer"
+            >
+              <mat-icon class="mt-2 w-10 h-10" fontIcon="add"></mat-icon>
+            </button>
+          </div>
+        </div>
       </div>
     </form>
   </div>

@@ -6,5 +6,15 @@ export const selectExpenseState = createFeatureSelector<ExpenseState>('expense')
 
 export const selectClickedExpenseForm = createSelector(
   selectExpenseState,
-  (state) => state.IsSelectedExpenseForm
+  (state) => state.IsSelectedExpenseForm,
+);
+
+export const selectClickedPaidByButton = createSelector(
+  selectExpenseState,
+  (state) => state.IsClickedPaidByButton,
+);
+
+export const selectClickedSplitAmongstButton = createSelector(
+  selectExpenseState,
+  (state) => state.IsClickedSplitAmongstButton,
 );

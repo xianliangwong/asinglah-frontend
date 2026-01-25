@@ -60,7 +60,7 @@ export class ExpensegroupFormComponent {
     private userService: UserService,
     private store: Store,
     private toastSignalService: ToastSignalService,
-    private groupExpenseService: ExpenseGroupService
+    private groupExpenseService: ExpenseGroupService,
   ) {
     this.email = this.store.selectSignal(selectLoginEmail);
     // this.ownerId=this.userService.getUserId(String(this.email()?.email)).pipe(map(
@@ -74,7 +74,7 @@ export class ExpensegroupFormComponent {
       this.userService
         .getUserId(String(this.email()?.email))
         .pipe(map((apiResponse) => apiResponse.data.userId)),
-      { initialValue: null }
+      { initialValue: null },
     );
   }
 
@@ -91,9 +91,9 @@ export class ExpensegroupFormComponent {
           catchError((err) => {
             this.loading.set(false);
             return of([]);
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
 
     //event emitter for subject to post create group expense
@@ -111,9 +111,9 @@ export class ExpensegroupFormComponent {
             catchError((err) => {
               this.toastSignalService.show('Failed to create group', 'fail');
               return EMPTY;
-            })
-          )
-        )
+            }),
+          ),
+        ),
       )
       .subscribe();
   }

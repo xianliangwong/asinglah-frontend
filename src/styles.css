@@ -7,6 +7,10 @@
   .asinglah-style {
     @apply text-4xl font-serif font-bold tracking-wide text-gray-900 dark:text-gray-50;
   }
+
+  .expenseform-label {
+    @apply text-gray-400 text-10pt;
+  }
 }
 
 /* Custom font families */

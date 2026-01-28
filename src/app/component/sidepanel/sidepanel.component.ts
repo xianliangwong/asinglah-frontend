@@ -22,6 +22,7 @@ import {
 } from 'src/app/features/sidepanel/sidepanel.action';
 import { rebindLoginEmail } from 'src/app/features/login/login.action';
 import { JoinedGroupResDTO } from 'src/app/model/responseDTO/JoinedGroupResDTO';
+import { resetExpensePage } from 'src/app/features/expense-page/expense.action';
 
 @Component({
   selector: 'app-sidepanel',
@@ -43,7 +44,10 @@ export class SidepanelComponent {
   groupExpenseList$!: Observable<JoinedGroupResDTO[] | null>;
   @Output() buttonClicked = new EventEmitter<void>();
 
-  constructor(private store: Store, private router: Router) {
+  constructor(
+    private store: Store,
+    private router: Router,
+  ) {
     this.expenseCount = 0;
     this.email = this.store.selectSignal(selectLoginEmail);
     //step 1: need to get userid from email , by dispatching action to get effect on api endpoint
@@ -102,6 +106,7 @@ export class SidepanelComponent {
 
   onExpenseGroupClick(groupId: number, groupName: string) {
     //navigate to expense group page
+    this.store.dispatch(resetExpensePage());
     this.router.navigate(['expensegroup', groupId, groupName]);
   }
 

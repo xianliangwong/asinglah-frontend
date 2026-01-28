@@ -10,6 +10,7 @@ import { SidepanelComponent } from 'src/app/component/sidepanel/sidepanel.compon
 import {
   clickedCloseExpense,
   clickedCreateExpense,
+  getGroupMembers,
 } from 'src/app/features/expense-page/expense.action';
 import { selectClickedExpenseForm } from 'src/app/features/expense-page/expense.selector';
 import { exitGroupsInvList } from 'src/app/features/sidepanel/sidepanel.action';
@@ -44,15 +45,27 @@ export class ExpensePageComponent {
 
   clickedCreateExpenseButton!: Observable<boolean>;
 
-  constructor(private store: Store, private route: ActivatedRoute) {
+  constructor(
+    private store: Store,
+    private route: ActivatedRoute,
+  ) {
     this.isCollapsed = false;
     this.isGroupInvListSelected = this.store.selectSignal(selectGroupInvClickState);
   }
 
   ngOnInit() {
-    this.expenseGroupId = Number(this.route.snapshot.paramMap.get('id')!);
-    this.expenseGroupName = this.route.snapshot.paramMap.get('groupName')!;
-    this.clickedCreateExpenseButton = this.store.select(selectClickedExpenseForm);
+    //handles param changes from sidepanel nav of expense page
+    this.route.params.subscribe((params) => {
+      this.expenseGroupId = Number(params['id']);
+      this.expenseGroupName = params['groupName'];
+      this.clickedCreateExpenseButton = this.store.select(selectClickedExpenseForm);
+      this.store.dispatch(getGroupMembers({ expenseGroupId: this.expenseGroupId }));
+    });
+
+    // this.expenseGroupId = Number(this.route.snapshot.paramMap.get('id')!);
+    // this.expenseGroupName = this.route.snapshot.paramMap.get('groupName')!;
+    // this.clickedCreateExpenseButton = this.store.select(selectClickedExpenseForm);
+    // this.store.dispatch(getGroupMembers({ expenseGroupId: this.expenseGroupId }));
   }
 
   //#region sidepanel

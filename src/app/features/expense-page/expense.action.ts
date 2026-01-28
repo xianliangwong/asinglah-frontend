@@ -1,4 +1,15 @@
-import { createAction } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
+import { ExpenseMembers } from './expense.state';
+
+export const getGroupMembers = createAction(
+  '[expense] get group members based on groupId',
+  props<{ expenseGroupId: number }>(),
+);
+
+export const loadGroupMember = createAction(
+  '[expense] load group member',
+  props<{ requestDTO: ExpenseMembers[] }>(),
+);
 
 export const clickedCreateExpense = createAction('[expense] clicked create expense');
 
@@ -11,3 +22,12 @@ export const hidePaidByList = createAction('[expense] hide paid by list');
 export const clickSplitAmongstButton = createAction('[expense] clicked split amongst button');
 
 export const hideSplitAmongstList = createAction('[expense] hide split amongst list');
+
+export const resetExpensePage = createAction('[expense] reset expense page state');
+
+export const addPaidByPerson = createAction(
+  '[expense] add pay by person',
+  props<{ requestDTO: ExpenseMembers }>(),
+);
+
+export const removePaidByPerson = createAction('[expense] remove paid person');

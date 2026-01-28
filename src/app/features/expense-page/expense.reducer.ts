@@ -1,12 +1,16 @@
 import { createReducer, on } from '@ngrx/store';
 import { initState } from './expense.state';
 import {
+  addPaidByPerson,
   clickedCloseExpense,
   clickedCreateExpense,
   clickPaidByButton,
   clickSplitAmongstButton,
   hidePaidByList,
   hideSplitAmongstList,
+  loadGroupMember,
+  removePaidByPerson,
+  resetExpensePage,
 } from './expense.action';
 
 export const expenseReducer = createReducer(
@@ -39,5 +43,28 @@ export const expenseReducer = createReducer(
   on(hideSplitAmongstList, (state) => ({
     ...state,
     IsClickedSplitAmongstButton: false,
+  })),
+
+  on(loadGroupMember, (state, { requestDTO }) => ({
+    ...state,
+    members: requestDTO,
+  })),
+
+  on(resetExpensePage, (state) => ({
+    ...state,
+    IsSelectedExpenseForm: false,
+    IsClickedPaidByButton: false,
+    IsClickedSplitAmongstButton: false,
+    members: null,
+  })),
+
+  on(addPaidByPerson, (state, { requestDTO }) => ({
+    ...state,
+    paidByPerson: requestDTO,
+  })),
+
+  on(removePaidByPerson, (state) => ({
+    ...state,
+    paidByPerson: null,
   })),
 );

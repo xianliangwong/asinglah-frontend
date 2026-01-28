@@ -8,6 +8,8 @@ import { CreateExpenseGrpResponse } from '../model/responseDTO/CreateExpenseGrpR
 import { GroupInvitationResDTO } from '../model/responseDTO/groupInvitationResDTO';
 import { UpdateExpenseGroupInv } from '../model/requestDTO/ExpenseGroupDTO/UpdateStatus-groupMember.dto';
 import { UpdateExpenseGroupInvRes } from '../model/responseDTO/UpdateStatus-groupMember.dto';
+import { StoreModule } from '@ngrx/store';
+import { ExpenseMembers } from '../features/expense-page/expense.state';
 
 @Injectable({ providedIn: 'root' })
 export class ExpenseGroupService {
@@ -21,7 +23,7 @@ export class ExpenseGroupService {
   }
 
   createGroupExpense(
-    requestDTO: CreateExpenseGrpDTO
+    requestDTO: CreateExpenseGrpDTO,
   ): Observable<APIResponse<CreateExpenseGrpResponse>> {
     return this.http.post<APIResponse<CreateExpenseGrpResponse>>(this.apiUrl, requestDTO);
   }
@@ -34,11 +36,19 @@ export class ExpenseGroupService {
   }
 
   updateGroupInv(
-    requestDTO: UpdateExpenseGroupInv
+    requestDTO: UpdateExpenseGroupInv,
   ): Observable<APIResponse<UpdateExpenseGroupInvRes>> {
     return this.http.put<APIResponse<UpdateExpenseGroupInvRes>>(
       this.apiUrl + '/invitation',
-      requestDTO
+      requestDTO,
     );
+  }
+
+  getGroupMember(expenseGroupId: number): Observable<APIResponse<ExpenseMembers[]>> {
+    const params = new HttpParams().set('expenseGroupId', expenseGroupId);
+
+    return this.http.get<APIResponse<ExpenseMembers[]>>(this.apiUrl + '/groupMembers', {
+      params,
+    });
   }
 }

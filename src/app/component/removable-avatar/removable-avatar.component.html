@@ -1,0 +1,17 @@
+<div class="inline-flex flex-col items-center">
+  <!-- Replace with actual user image source if available -->
+
+  <div class="relative">
+    <button class="w-[48px] h-[48px] rounded">
+      <mat-icon fontIcon="account_circle" class="!w-[48px] !h-[48px] !text-[48px]"></mat-icon>
+    </button>
+    <button
+      class="absolute -top-1 -right-1 text-green-500 border border-green-500 rounded-full w-5 h-5 flex items-center justify-center"
+      (click)="onRemove()"
+    >
+      X
+    </button>
+  </div>
+
+  <span class="text-8pt">{{ name }}</span>
+</div>

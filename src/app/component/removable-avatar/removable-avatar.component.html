@@ -13,5 +13,5 @@
     </button>
   </div>
 
-  <span class="text-8pt">{{ name }}</span>
+  <span class="text-8pt">{{ id == (sessionUserId$ | async) ? 'You' : name }}</span>
 </div>

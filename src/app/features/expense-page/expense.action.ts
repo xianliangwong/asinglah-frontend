@@ -31,3 +31,13 @@ export const addPaidByPerson = createAction(
 );
 
 export const removePaidByPerson = createAction('[expense] remove paid person');
+
+export const addSplitAmongstList = createAction(
+  '[expense] add split amongst list of expense members',
+  props<{ requestDTO: ExpenseMembers[] }>(),
+);
+
+export const removeSplitAmongstPerson = createAction(
+  '[expense] remove split amongst person based on userId',
+  props<{ memberId: number }>(),
+);

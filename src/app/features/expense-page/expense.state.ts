@@ -4,6 +4,7 @@ export interface ExpenseState {
   IsClickedSplitAmongstButton: boolean;
   members: ExpenseMembers[] | null;
   paidByPerson: ExpenseMembers | null;
+  splitAmongstPerson: ExpenseMembers[] | null;
 }
 
 export interface ExpenseMembers {
@@ -17,4 +18,5 @@ export const initState: ExpenseState = {
   IsClickedSplitAmongstButton: false,
   members: null,
   paidByPerson: null,
+  splitAmongstPerson: null,
 };

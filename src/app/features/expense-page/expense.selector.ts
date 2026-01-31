@@ -22,3 +22,8 @@ export const selectClickedSplitAmongstButton = createSelector(
 export const selectGroupMembers = createSelector(selectExpenseState, (state) => state.members);
 
 export const selectPaidByPerson = createSelector(selectExpenseState, (state) => state.paidByPerson);
+
+export const selectSplitAmongstList = createSelector(
+  selectExpenseState,
+  (state) => state.splitAmongstPerson,
+);

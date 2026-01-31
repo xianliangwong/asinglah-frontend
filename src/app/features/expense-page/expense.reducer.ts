@@ -58,6 +58,8 @@ export const expenseReducer = createReducer(
     IsClickedPaidByButton: false,
     IsClickedSplitAmongstButton: false,
     members: null,
+    paidByPerson: null,
+    splitAmongstPerson: null,
   })),
 
   on(addPaidByPerson, (state, { requestDTO }) => ({

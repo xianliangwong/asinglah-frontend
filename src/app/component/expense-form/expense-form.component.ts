@@ -4,7 +4,7 @@ export interface InitCurrecnyDropDownList {
 }
 
 import { CommonModule } from '@angular/common';
-import { Component, Signal } from '@angular/core';
+import { Component, computed, Signal } from '@angular/core';
 
 import {
   ɵInternalFormsSharedModule,
@@ -15,22 +15,29 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { PriceNumericOnlyDirective } from 'src/app/directive/numeric-only.directive';
 import {
   addPaidByPerson,
+  addSplitAmongstList,
   clickPaidByButton,
+  clickSplitAmongstButton,
   hidePaidByList,
+  hideSplitAmongstList,
   removePaidByPerson,
+  removeSplitAmongstPerson,
 } from 'src/app/features/expense-page/expense.action';
 import {
   selectClickedPaidByButton,
+  selectClickedSplitAmongstButton,
   selectGroupMembers,
   selectPaidByPerson,
+  selectSplitAmongstList,
 } from 'src/app/features/expense-page/expense.selector';
 import { ExpenseMembers } from 'src/app/features/expense-page/expense.state';
 import { selectUserId } from 'src/app/features/sidepanel/sidepanel.selector';
 import { RemovableAvatarComponent } from '../removable-avatar/removable-avatar.component';
+import { ɵEmptyOutletComponent } from '@angular/router';
 
 @Component({
   selector: 'app-expense-form',
@@ -43,6 +50,7 @@ import { RemovableAvatarComponent } from '../removable-avatar/removable-avatar.c
     PriceNumericOnlyDirective,
     MatIconModule,
     RemovableAvatarComponent,
+    ɵEmptyOutletComponent,
   ],
   templateUrl: './expense-form.component.html',
   styleUrl: './expense-form.component.css',
@@ -59,6 +67,14 @@ export class ExpenseFormComponent {
   currentActiveUser$!: Signal<number>;
   paidByButton$!: Observable<boolean>;
   paidByPerson$!: Observable<ExpenseMembers | null>;
+
+  splitAmongButton$!: Observable<boolean>;
+  selectedMembers = new Set<ExpenseMembers>();
+  // get existingIds(): Set<number> {
+  //   return new Set((this.splitAmongstList$() ?? []).map((e) => e.userId));
+  // }
+  existingIds = computed(() => new Set((this.splitAmongstList$() ?? []).map((e) => e.userId)));
+  splitAmongstList$!: Signal<ExpenseMembers[] | null>;
 
   listOfGroupMembers$!: Observable<ExpenseMembers[] | null>;
 
@@ -80,6 +96,8 @@ export class ExpenseFormComponent {
     this.currentActiveUser$ = this.store.selectSignal(selectUserId);
     this.listOfGroupMembers$ = this.store.select(selectGroupMembers);
     this.paidByPerson$ = this.store.select(selectPaidByPerson);
+    this.splitAmongstList$ = this.store.selectSignal(selectSplitAmongstList);
+    this.splitAmongButton$ = this.store.select(selectClickedSplitAmongstButton);
   }
 
   onSubmit() {}
@@ -92,7 +110,10 @@ export class ExpenseFormComponent {
     this.store.dispatch(clickPaidByButton());
   }
 
-  onClickSplitAmonst() {}
+  onClickSplitAmongst() {
+    this.selectedMembers.clear();
+    this.store.dispatch(clickSplitAmongstButton());
+  }
 
   onRemovePaidPersonAvatar(memberId: number) {
     this.store.dispatch(removePaidByPerson());
@@ -106,5 +127,52 @@ export class ExpenseFormComponent {
     this.store.dispatch(addPaidByPerson({ requestDTO }));
     //after select the user , hide the list of available person, reset paidByButton
     this.store.dispatch(hidePaidByList());
+  }
+
+  toggleMember(userId: number, email: string, event: Event) {
+    const input = event.target as HTMLInputElement;
+    const checked = input.checked;
+    if (checked) {
+      const expenseMemberDTO: ExpenseMembers = {
+        userId: userId,
+        email: email,
+      };
+      this.selectedMembers.add(expenseMemberDTO);
+    } else {
+      const expenseMemberDTO: ExpenseMembers = {
+        userId: userId,
+        email: email,
+      };
+      this.selectedMembers.delete(expenseMemberDTO);
+    }
+  }
+
+  onClickAddPeople() {
+    //if utilized observable as opposed to signal, need subscribe() to perform if condition logic
+    if ((this.splitAmongstList$() ?? []).length == 0) {
+      const splitAmongstArray = Array.from(this.selectedMembers);
+      this.store.dispatch(addSplitAmongstList({ requestDTO: splitAmongstArray }));
+      this.store.dispatch(hideSplitAmongstList());
+    } else {
+      const existingIds: Set<number> = new Set(
+        (this.splitAmongstList$() ?? []).map((value) => {
+          return value.userId;
+        }),
+      );
+      for (const member of this.selectedMembers) {
+        if (existingIds.has(member.userId)) {
+          // duplicate found
+          this.selectedMembers.delete(member);
+        }
+        const splitAmongstArray = Array.from(this.selectedMembers);
+        this.store.dispatch(addSplitAmongstList({ requestDTO: splitAmongstArray }));
+        this.store.dispatch(hideSplitAmongstList());
+      }
+    }
+  }
+
+  onRemoveSplitAmongstPersonAvatar(memberId: number) {
+    console.log('member id to be removed: ' + memberId);
+    this.store.dispatch(removeSplitAmongstPerson({ memberId: memberId }));
   }
 }

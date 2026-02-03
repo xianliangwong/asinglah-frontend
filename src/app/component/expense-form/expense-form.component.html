@@ -1,4 +1,6 @@
-<div class="w-[800px] h-[800px] bg-white border-gray-400 rounded-sm shadow-lg p-[32px]">
+<div
+  class="w-[800px] h-[800px] bg-white border-gray-400 rounded-sm shadow-lg p-[32px] overflow-auto"
+>
   <div class="flex flex-col ml-[32px] space-y-[18px]">
     <label class="text-18pt">Add an expense</label>
     <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-[10px]">
@@ -148,7 +150,7 @@
           <ng-container *ngIf="(paidByPerson$ | async) == null">
             <div
               *ngIf="paidByButton$ | async"
-              class="flex flex-col space-y-[8px] h-[300px] w-[300px] border border-gray-400 rounded-sm"
+              class="flex flex-col space-y-[8px] h-[150px] w-[300px] border border-gray-400 rounded-sm"
             >
               <ng-container *ngIf="listOfGroupMembers$ | async as members">
                 <div *ngIf="members.length > 0" class="mt-2 ml-2 flex flex-col space-y-3">
@@ -222,6 +224,75 @@
               Add People
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- split form tabs -->
+      <div class="flex border-b border-solid border-gray-300 w-[500px]">
+        <!-- Tab Headers -->
+        <div
+          class="expense-tab-header"
+          [class.expense-tab-header-active]="activeTab === 'expense'"
+          (click)="selectTab('expense')"
+        >
+          Split Expense
+        </div>
+        <div
+          class="expense-tab-header"
+          [class.expense-tab-header-active]="activeTab === 'owed'"
+          (click)="selectTab('owed')"
+        >
+          Full Amount Owed
+        </div>
+      </div>
+
+      <!-- content for first tab -->
+      <div
+        class="flex flex-col border border-solid rounded-md border-gray-300 h-[400px] w-[500px]"
+        *ngIf="activeTab === 'expense'"
+      >
+        <div class="flex flex-row pt-[12px] pl-[10px]">
+          <select
+            formControlName="splitMode"
+            class="border bg-white border-gray-300 w-[300px] rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="splitEqual" selected>Split Equally</option>
+            <option value="splitPercentage">Split Percentage</option>
+            <option value="utilities">Utilities</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+        <div class="flex flex-col pt-[15px] pl-[14px] space-y-3">
+          <ng-container *ngIf="splitAmongstList$() as splitMembers">
+            <ng-container *ngIf="splitMembers.length > 0">
+              <div formArrayName="splitMembers">
+                <div
+                  class="flex flex-row space-x-3"
+                  *ngFor="let splitMemberCtrl of splitMemberArray.controls; let i = index"
+                  [formGroupName]="i"
+                >
+                  <span class="">{{ splitMemberCtrl.get('email')?.value }}</span>
+                  <div
+                    class="flex items-center space-x-1"
+                    *ngIf="expenseForm.get('splitMode')?.value === 'splitPercentage'"
+                  >
+                    <input
+                      formControlName="percentage"
+                      type="number"
+                      min="0"
+                      max="100"
+                      class="border px-2 py-1 rounded w-[60px]"
+                      placeholder="0"
+                    />
+                    <span>%</span>
+                  </div>
+                  <span>
+                    {{ splitMemberCtrl.get('amount')?.value ?? 'empty amount' }}
+                  </span>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
         </div>
       </div>
     </form>

@@ -11,6 +11,12 @@
   .expenseform-label {
     @apply text-gray-400 text-10pt;
   }
+  .expense-tab-header {
+    @apply px-5 py-2 cursor-pointer text-gray-400 transition-colors duration-300;
+  }
+  .expense-tab-header-active {
+    @apply text-black border-b-2 border-green-500 font-bold;
+  }
 }
 
 /* Custom font families */

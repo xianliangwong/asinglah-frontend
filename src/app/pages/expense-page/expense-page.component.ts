@@ -11,6 +11,7 @@ import {
   clickedCloseExpense,
   clickedCreateExpense,
   getGroupMembers,
+  resetExpensePage,
 } from 'src/app/features/expense-page/expense.action';
 import { selectClickedExpenseForm } from 'src/app/features/expense-page/expense.selector';
 import { exitGroupsInvList } from 'src/app/features/sidepanel/sidepanel.action';
@@ -80,6 +81,7 @@ export class ExpensePageComponent {
 
   closeForm() {
     this.isCreatingExpenseGroup = false;
+    this.store.dispatch(resetExpensePage());
     //dispatch to reset state
     //dispatch action to get back count for list of expense groups
   }

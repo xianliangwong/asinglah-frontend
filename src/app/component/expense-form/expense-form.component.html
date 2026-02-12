@@ -94,7 +94,7 @@
             </div>
             <div class="">
               <input
-                type="text"
+                type="number"
                 appInputPriceNumericOnly
                 formControlName="expenseAmount"
                 class="border rounded-md border-gray-400 h-[40px] w-[100px]"
@@ -262,16 +262,25 @@
             <option value="others">Others</option>
           </select>
         </div>
-        <div class="flex flex-col pt-[15px] pl-[14px] space-y-3">
+        <div class="flex flex-col pt-[15px] pl-[14px]">
           <ng-container *ngIf="splitAmongstList$() as splitMembers">
             <ng-container *ngIf="splitMembers.length > 0">
-              <div formArrayName="splitMembers">
+              <div
+                class="flex flex-col space-y-5 h-[380px] pt-[10px] overflow-auto"
+                formArrayName="splitMembers"
+              >
                 <div
                   class="flex flex-row space-x-3"
                   *ngFor="let splitMemberCtrl of splitMemberArray.controls; let i = index"
                   [formGroupName]="i"
                 >
                   <span class="">{{ splitMemberCtrl.get('email')?.value }}</span>
+                  <input
+                    class="grow-3 underline border-none focus: outline-none ring-0"
+                    formControlName="splitExpDesc"
+                    type="text"
+                    placeholder="optional description"
+                  />
                   <div
                     class="flex items-center space-x-1"
                     *ngIf="expenseForm.get('splitMode')?.value === 'splitPercentage'"
@@ -281,19 +290,31 @@
                       type="number"
                       min="0"
                       max="100"
-                      class="border px-2 py-1 rounded w-[60px]"
+                      class="border px-2 py-1 rounded w-[60px] h-[24px]"
                       placeholder="0"
                     />
                     <span>%</span>
                   </div>
-                  <span>
-                    {{ splitMemberCtrl.get('amount')?.value ?? 'empty amount' }}
-                  </span>
+                  <div class="flex flex-row w-[60px] space-x-1">
+                    <span> $ </span>
+                    <span class="underline">
+                      {{ splitMemberCtrl.get('amount')?.value ?? 'empty amount' }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </ng-container>
           </ng-container>
         </div>
+      </div>
+
+      <div class="flex flex-row justify-center w-[500px]">
+        <button
+          type="submit"
+          class="border rounded-full bg-green-500 text-white h-[45px] w-[250px] hover:cursor-pointer"
+        >
+          Add split expense
+        </button>
       </div>
     </form>
   </div>

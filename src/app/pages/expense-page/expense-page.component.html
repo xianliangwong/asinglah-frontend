@@ -97,7 +97,7 @@
   class="fixed inset-0 bg-black/40 backdrop-blur-sm flex place-items-center justify-center z-40 border rounded-sm"
 >
   <div class="relative">
-    <app-expense-form></app-expense-form>
+    <app-expense-form [groupId]="this.expenseGroupId"></app-expense-form>
     <button
       class="absolute top-2 right-2 text-gray-600 hover:text-black cursor-pointer text-xl"
       (click)="closeExpenseForm()"

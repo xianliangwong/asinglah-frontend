@@ -25,6 +25,10 @@ export const expenseReducer = createReducer(
   on(clickedCloseExpense, (state) => ({
     ...state,
     IsSelectedExpenseForm: false,
+    IsClickedPaidByButton: false,
+    IsClickedSplitAmongstButton: false,
+    paidByPerson: null,
+    splitAmongstPerson: null,
   })),
 
   on(clickPaidByButton, (state) => ({

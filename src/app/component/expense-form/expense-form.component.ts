@@ -4,7 +4,7 @@ export interface InitCurrecnyDropDownList {
 }
 
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, Input, Signal } from '@angular/core';
 
 import {
   ɵInternalFormsSharedModule,
@@ -20,7 +20,7 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
-import { distinctUntilChanged, Observable, skip, Subscription } from 'rxjs';
+import { distinctUntilChanged, firstValueFrom, Observable, skip, Subscription, take } from 'rxjs';
 import { PriceNumericOnlyDirective } from 'src/app/directive/numeric-only.directive';
 import {
   addPaidByPerson,
@@ -29,6 +29,7 @@ import {
   clickSplitAmongstButton,
   hidePaidByList,
   hideSplitAmongstList,
+  postExpenseSplit,
   removePaidByPerson,
   removeSplitAmongstPerson,
 } from 'src/app/features/expense-page/expense.action';
@@ -44,6 +45,8 @@ import { selectUserId } from 'src/app/features/sidepanel/sidepanel.selector';
 import { RemovableAvatarComponent } from '../removable-avatar/removable-avatar.component';
 
 import { ToastSignalService } from 'src/app/features/toast/ToastSignalService';
+import { ExpenseSplitRequestDTO } from 'src/app/model/requestDTO/ExpenseSplitRequestDTO/Create-ExpenseSplit-DTO';
+import { SplitRequestDTO } from 'src/app/model/requestDTO/ExpenseSplitRequestDTO/Split-Request-DTO';
 
 @Component({
   selector: 'app-expense-form',
@@ -64,11 +67,16 @@ import { ToastSignalService } from 'src/app/features/toast/ToastSignalService';
 export class ExpenseFormComponent {
   expenseForm = new FormGroup({
     expenseDescription: new FormControl('', Validators.required),
-    expenseAmount: new FormControl('', Validators.required),
+    expenseAmount: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^\d+(\.\d{1,2})?$/),
+    ]),
     expenseDate: new FormControl('', Validators.required),
     splitMode: new FormControl('splitEqual'),
     splitMembers: new FormArray<FormGroup<any>>([]),
   });
+
+  @Input() groupId!: number;
 
   currencyDropDown: boolean = false;
 
@@ -125,7 +133,9 @@ export class ExpenseFormComponent {
             percentages = 0;
             totalPercentage = 0;
             percentages = values.map((v: any) => Number(v.percentage));
-            allFilled = percentages.every((p: any) => !isNaN(p) && p !== null && p !== '');
+            allFilled = percentages.every(
+              (p: any) => !isNaN(p) && p !== null && p !== '' && p !== 0,
+            );
 
             totalPercentage = percentages.reduce(
               (acc: number, curr: number) => acc + (curr || 0),
@@ -139,6 +149,8 @@ export class ExpenseFormComponent {
             if (allFilled) {
               if (totalPercentage > 100) {
                 this.toastService.show('total percentage cannot exceed 100', 'fail');
+              } else if (totalPercentage < 100) {
+                this.toastService.show('total percentage must be 100', 'fail');
               } else {
                 isUpdating = true;
                 this.calculatePercentageSplit();
@@ -163,7 +175,45 @@ export class ExpenseFormComponent {
     this.splitAmongButton$ = this.store.select(selectClickedSplitAmongstButton);
   }
 
-  onSubmit() {}
+  onSubmit() {
+    this.paidByPerson$.pipe(take(1)).subscribe((value) => {
+      if (this.expenseForm.errors == null && value !== null && this.splitAmongstList$() !== null) {
+        //step 1: create the object dto and fill the properties form expenseForm form group
+        //step 2:dispatch the expense split to post to expense controller
+        const payerId = value.userId;
+        const requestDTO: ExpenseSplitRequestDTO = {
+          creatorId: this.currentActiveUser$(),
+          payerId: payerId,
+          groupId: this.groupId,
+          description: this.expenseForm.get('expenseDescription')?.value ?? '',
+          totalAmount: Number(this.expenseForm.get('expenseAmount')?.value) ?? 0.0,
+          transactionDate: this.expenseForm.get('expenseDate')?.value ?? '',
+          splits: [],
+        };
+
+        const splitMembers = this.expenseForm.get('splitMembers') as FormArray;
+
+        splitMembers.controls.forEach((control: AbstractControl) => {
+          const group = control as FormGroup;
+          const splitRequestDTO: SplitRequestDTO = {
+            userId: Number(group.get('userId')?.value),
+            amount: Number(group.get('amount')?.value),
+            splitDescription: group.get('splitExpDesc')?.value ?? '',
+          };
+          requestDTO.splits.push(splitRequestDTO);
+        });
+
+        this.store.dispatch(postExpenseSplit({ requestDTO }));
+      } else {
+        if (this.splitAmongstList$() === null) {
+          this.toastService.show('please add person to split expense', 'fail');
+        }
+        if (value === null) {
+          this.toastService.show('please add paid by person', 'fail');
+        }
+      }
+    });
+  }
 
   toggleDropdown() {
     this.currencyDropDown = !this.currencyDropDown;
@@ -265,7 +315,16 @@ export class ExpenseFormComponent {
     const total = formArray.controls
       .map((ctrl) => Number(ctrl.get('percentage')?.value) || 0)
       .reduce((acc, curr) => acc + curr, 0);
-    return total > 100 ? { percentageOverflow: true } : null;
+
+    if (total > 100) {
+      return { percentageOverflow: true };
+    } else if (total !== 0 && total < 100) {
+      return { percentageUnderflow: true };
+    } else {
+      return null;
+    }
+
+    //return total > 100 ? { percentageOverflow: true } : null;
   };
 
   get splitMemberArray(): FormArray {
@@ -278,6 +337,7 @@ export class ExpenseFormComponent {
         members.map(
           (m) =>
             new FormGroup({
+              userId: new FormControl(m.userId),
               email: new FormControl(m.email),
               splitExpDesc: new FormControl(''),
               percentage: new FormControl<number>(0, [Validators.min(0), Validators.max(100)]), //input field for each member's percentage share

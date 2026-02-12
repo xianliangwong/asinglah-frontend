@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { ExpenseMembers } from './expense.state';
+import { ExpenseSplitRequestDTO } from 'src/app/model/requestDTO/ExpenseSplitRequestDTO/Create-ExpenseSplit-DTO';
 
 export const getGroupMembers = createAction(
   '[expense] get group members based on groupId',
@@ -40,4 +41,9 @@ export const addSplitAmongstList = createAction(
 export const removeSplitAmongstPerson = createAction(
   '[expense] remove split amongst person based on userId',
   props<{ memberId: number }>(),
+);
+
+export const postExpenseSplit = createAction(
+  '[expense] post expense split',
+  props<{ requestDTO: ExpenseSplitRequestDTO }>(),
 );

@@ -20,7 +20,15 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
-import { distinctUntilChanged, firstValueFrom, Observable, skip, Subscription, take } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  Observable,
+  skip,
+  Subscription,
+  take,
+} from 'rxjs';
 import { PriceNumericOnlyDirective } from 'src/app/directive/numeric-only.directive';
 import {
   addPaidByPerson,
@@ -114,26 +122,44 @@ export class ExpenseFormComponent {
     effect(() => {
       const list = this.splitAmongstList$();
       const expenseAmountRaw = this.expenseForm.get('expenseAmount')?.value;
+      const splitType = this.expenseForm.get('splitMode');
       if (list && list.length > 0 && expenseAmountRaw !== null) {
         this.setMembers(list);
 
         this.calculateSplitEven();
         const splitMembers = this.expenseForm.get('splitMembers') as FormArray;
 
+        let amount;
+        let totalAmount;
         let percentages;
+        let allFilledAmount;
         let allFilled;
         let totalPercentage;
         let isUpdating = false;
 
         this.splitMembersSub = splitMembers.valueChanges
-          .pipe(skip(1), distinctUntilChanged())
+          .pipe(
+            skip(1),
+            distinctUntilChanged(),
+            debounceTime(300), // waits 300ms after the last change
+          )
           .subscribe((values) => {
             if (isUpdating) return;
             allFilled = false;
+            allFilledAmount = false;
+            amount = 0;
+            totalAmount = 0;
+            amount = values.map((v: any) => Number(v.amount));
             percentages = 0;
             totalPercentage = 0;
             percentages = values.map((v: any) => Number(v.percentage));
+
+            //all fields filled logic
             allFilled = percentages.every(
+              (p: any) => !isNaN(p) && p !== null && p !== '' && p !== 0,
+            );
+
+            allFilledAmount = amount.every(
               (p: any) => !isNaN(p) && p !== null && p !== '' && p !== 0,
             );
 
@@ -142,11 +168,18 @@ export class ExpenseFormComponent {
               0,
             );
 
-            if (!allFilled) {
+            totalAmount = amount.reduce((acc: number, curr: number) => acc + (curr || 0), 0);
+
+            if (!allFilled && splitType?.value === 'splitPercentage') {
               return;
             }
 
-            if (allFilled) {
+            if (!allFilledAmount && splitType?.value === 'customAmount') {
+              return;
+            }
+
+            //logic for percentage validation
+            if (allFilled && splitType?.value === 'splitPercentage') {
               if (totalPercentage > 100) {
                 this.toastService.show('total percentage cannot exceed 100', 'fail');
               } else if (totalPercentage < 100) {
@@ -155,6 +188,18 @@ export class ExpenseFormComponent {
                 isUpdating = true;
                 this.calculatePercentageSplit();
                 isUpdating = false;
+              }
+            }
+
+            //logic for amount validation
+            if (allFilledAmount && splitType?.value === 'customAmount') {
+              if (totalAmount > Number(expenseAmountRaw)) {
+                this.toastService.show('total split amount cannot exceed expenseAmount', 'fail');
+              } else if (totalAmount < Number(expenseAmountRaw)) {
+                this.toastService.show(
+                  'total split amount cannot be below the expenseAmount',
+                  'fail',
+                );
               }
             }
           });
@@ -177,7 +222,13 @@ export class ExpenseFormComponent {
 
   onSubmit() {
     this.paidByPerson$.pipe(take(1)).subscribe((value) => {
-      if (this.expenseForm.errors == null && value !== null && this.splitAmongstList$() !== null) {
+      const splitMembersArray = this.expenseForm.get('splitMembers') as FormArray;
+      if (
+        this.expenseForm.errors == null &&
+        value !== null &&
+        this.splitAmongstList$() !== null &&
+        !splitMembersArray.errors
+      ) {
         //step 1: create the object dto and fill the properties form expenseForm form group
         //step 2:dispatch the expense split to post to expense controller
         const payerId = value.userId;
@@ -210,6 +261,12 @@ export class ExpenseFormComponent {
         }
         if (value === null) {
           this.toastService.show('please add paid by person', 'fail');
+        }
+
+        if (splitMembersArray.errors) {
+          const errorKeys = Object.keys(splitMembersArray.errors);
+          const errorMessage = errorKeys.join(', '); // "amountOverflow, percentageOverflow"
+          this.toastService.show('error message: ' + errorMessage, 'fail');
         }
       }
     });
@@ -312,19 +369,38 @@ export class ExpenseFormComponent {
   // Custom validator function
   totalPercentageValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const formArray = control as FormArray;
+    const splitMode = this.expenseForm.get('splitMode')?.value;
     const total = formArray.controls
       .map((ctrl) => Number(ctrl.get('percentage')?.value) || 0)
       .reduce((acc, curr) => acc + curr, 0);
 
-    if (total > 100) {
+    if (splitMode === 'splitPercentage' && total > 100) {
       return { percentageOverflow: true };
-    } else if (total !== 0 && total < 100) {
+    } else if (splitMode === 'splitPercentage' && total !== 0 && total < 100) {
       return { percentageUnderflow: true };
     } else {
       return null;
     }
 
     //return total > 100 ? { percentageOverflow: true } : null;
+  };
+
+  //custom validator amount function
+  totalAmountValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const expenseAmountRaw = this.expenseForm.get('expenseAmount')?.value;
+    const splitMode = this.expenseForm.get('splitMode')?.value;
+    const formArray = control as FormArray;
+    const totalAmount = formArray.controls
+      .map((ctrl) => Number(ctrl.get('amount')?.value) || 0)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    if (splitMode === 'customAmount' && totalAmount > Number(expenseAmountRaw)) {
+      return { amountOverflow: true };
+    } else if (splitMode === 'customAmount' && totalAmount < Number(expenseAmountRaw)) {
+      return { amountUnderflow: true };
+    } else {
+      return null;
+    }
   };
 
   get splitMemberArray(): FormArray {
@@ -341,10 +417,10 @@ export class ExpenseFormComponent {
               email: new FormControl(m.email),
               splitExpDesc: new FormControl(''),
               percentage: new FormControl<number>(0, [Validators.min(0), Validators.max(100)]), //input field for each member's percentage share
-              amount: new FormControl<number>({ value: 0, disabled: true }), // derived, not editable
+              amount: new FormControl<number>(0), // derived, not editable
             }),
         ),
-        [this.totalPercentageValidator],
+        [this.totalPercentageValidator, this.totalAmountValidator],
       );
 
       this.expenseForm.setControl('splitMembers', formArray);
@@ -370,13 +446,15 @@ export class ExpenseFormComponent {
 
   //add calculateSplitPercentage
   calculatePercentageSplit(): void {
-    const totalAmount = Number(this.expenseForm.get('expenseAmount')?.value) ?? 0.0;
-    const splitMembers = this.expenseForm.get('splitMembers') as FormArray;
+    if (this.expenseForm.get('splitMode')?.value !== 'customAmount') {
+      const totalAmount = Number(this.expenseForm.get('expenseAmount')?.value) ?? 0.0;
+      const splitMembers = this.expenseForm.get('splitMembers') as FormArray;
 
-    splitMembers.controls.forEach((group) => {
-      const percent = Number(group.get('percentage')?.value) ?? 0.0;
-      group.get('amount')?.setValue((totalAmount * percent) / 100);
-    });
+      splitMembers.controls.forEach((group) => {
+        const percent = Number(group.get('percentage')?.value) ?? 0.0;
+        group.get('amount')?.setValue((totalAmount * percent) / 100);
+      });
+    }
   }
 
   //#endregion

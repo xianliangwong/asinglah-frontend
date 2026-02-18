@@ -218,6 +218,7 @@
           <!-- add button for checked split amongst person -->
           <div *ngIf="splitAmongButton$ | async" class="flex h-[60px] w-[300px]">
             <button
+              type="button"
               class="w-full h-full bg-green-500 text-white rounded-full border border-green-500"
               (click)="onClickAddPeople()"
             >
@@ -237,13 +238,6 @@
         >
           Split Expense
         </div>
-        <div
-          class="expense-tab-header"
-          [class.expense-tab-header-active]="activeTab === 'owed'"
-          (click)="selectTab('owed')"
-        >
-          Full Amount Owed
-        </div>
       </div>
 
       <!-- content for first tab -->
@@ -258,8 +252,7 @@
           >
             <option value="splitEqual" selected>Split Equally</option>
             <option value="splitPercentage">Split Percentage</option>
-            <option value="utilities">Utilities</option>
-            <option value="others">Others</option>
+            <option value="customAmount">Custom Amount</option>
           </select>
         </div>
         <div class="flex flex-col pt-[15px] pl-[14px]">
@@ -295,11 +288,27 @@
                     />
                     <span>%</span>
                   </div>
-                  <div class="flex flex-row w-[60px] space-x-1">
+                  <div
+                    *ngIf="expenseForm.get('splitMode')?.value !== 'customAmount'"
+                    class="flex flex-row w-[60px] space-x-1"
+                  >
                     <span> $ </span>
                     <span class="underline">
                       {{ splitMemberCtrl.get('amount')?.value ?? 'empty amount' }}
                     </span>
+                  </div>
+                  <div
+                    *ngIf="expenseForm.get('splitMode')?.value === 'customAmount'"
+                    class="flex flex-row w-[60px] space-x-1"
+                  >
+                    <span> $ </span>
+                    <input
+                      formControlName="amount"
+                      type="number"
+                      min="0"
+                      class="border px-2 py-1 rounded w-[60px] h-[24px]"
+                      placeholder="0"
+                    />
                   </div>
                 </div>
               </div>

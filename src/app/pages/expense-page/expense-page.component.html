@@ -23,7 +23,7 @@
     <div *ngIf="isCollapsed" class="mt-4"></div>
   </aside>
 
-  <div class="h-screen grid grid-rows-[5%_30%_65%]">
+  <div class="h-screen grid grid-rows-[5%_40%_60%]">
     <!-- First row: 1 columns -->
     <div class="grid grid-cols-1">
       <div class="">
@@ -47,7 +47,9 @@
 
     <!-- Second row: 2 columns -->
     <div class="grid grid-cols-2">
-      <div class="bg-blue-300">Column 1</div>
+      <div class="ml-3 mt-3 mb-3 mr-3">
+        <app-owed-component></app-owed-component>
+      </div>
       <div class="bg-blue-500">Column 2</div>
     </div>
 

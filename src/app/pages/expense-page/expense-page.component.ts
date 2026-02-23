@@ -17,6 +17,7 @@ import { selectClickedExpenseForm } from 'src/app/features/expense-page/expense.
 import { exitGroupsInvList } from 'src/app/features/sidepanel/sidepanel.action';
 import { selectGroupInvClickState } from 'src/app/features/sidepanel/sidepanel.selector';
 import { ExpenseFormComponent } from 'src/app/component/expense-form/expense-form.component';
+import { OwedComponentComponent } from 'src/app/component/owed-component/owed-component.component';
 
 @Component({
   selector: 'app-expense-page',
@@ -30,6 +31,7 @@ import { ExpenseFormComponent } from 'src/app/component/expense-form/expense-for
     GrouprequestListComponent,
     MatIconModule,
     ExpenseFormComponent,
+    OwedComponentComponent,
   ],
   templateUrl: './expense-page.component.html',
   styleUrl: './expense-page.component.css',

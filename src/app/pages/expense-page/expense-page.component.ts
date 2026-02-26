@@ -15,9 +15,16 @@ import {
 } from 'src/app/features/expense-page/expense.action';
 import { selectClickedExpenseForm } from 'src/app/features/expense-page/expense.selector';
 import { exitGroupsInvList } from 'src/app/features/sidepanel/sidepanel.action';
-import { selectGroupInvClickState } from 'src/app/features/sidepanel/sidepanel.selector';
+import {
+  selectGroupInvClickState,
+  selectUserId,
+} from 'src/app/features/sidepanel/sidepanel.selector';
 import { ExpenseFormComponent } from 'src/app/component/expense-form/expense-form.component';
 import { OwedComponentComponent } from 'src/app/component/owed-component/owed-component.component';
+import {
+  callGetOweDonutChartService,
+  resetOweDonutChartReducer,
+} from 'src/app/features/expense-donutChart/expense-donutChart.action';
 
 @Component({
   selector: 'app-expense-page',
@@ -41,6 +48,7 @@ export class ExpensePageComponent {
   isCollapsed: boolean;
   isCreatingExpenseGroup: boolean = false;
   isGroupInvListSelected: Signal<boolean> = signal(false);
+  userId!: number;
   //
 
   expenseGroupId!: number;
@@ -59,10 +67,19 @@ export class ExpensePageComponent {
   ngOnInit() {
     //handles param changes from sidepanel nav of expense page
     this.route.params.subscribe((params) => {
+      this.store.dispatch(resetOweDonutChartReducer());
+      this.userId = Number(params['userId']);
       this.expenseGroupId = Number(params['id']);
       this.expenseGroupName = params['groupName'];
       this.clickedCreateExpenseButton = this.store.select(selectClickedExpenseForm);
       this.store.dispatch(getGroupMembers({ expenseGroupId: this.expenseGroupId }));
+      //dispatch action to load youowed and youareowed donut chart's data
+      this.store.dispatch(
+        callGetOweDonutChartService({
+          userId: this.userId,
+          groupId: this.expenseGroupId,
+        }),
+      );
     });
 
     // this.expenseGroupId = Number(this.route.snapshot.paramMap.get('id')!);

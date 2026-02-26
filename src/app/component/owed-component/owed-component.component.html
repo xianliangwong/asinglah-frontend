@@ -18,6 +18,17 @@
     </div>
   </div>
 
-  <!--tab content -->
-  <div class="bg-slate-100 w-full h-[300px] rounded-xl" *ngIf="activeTab === 'youowed'"></div>
+  <!--tab content for youowed -->
+  <div class="bg-slate-100 w-full h-[300px] rounded-xl" *ngIf="activeTab === 'youowed'">
+    <div class="flex flex-row">
+      <ag-charts
+        class="w-1/2 overflow-x-auto"
+        *ngIf="this.OweDonutChart$().length >= 0"
+        [options]="oweOptions"
+      ></ag-charts>
+    </div>
+  </div>
+
+  <!--tab content for youareowed -->
+  <div class="bg-slate-100 w-full h-[300px] rounded-xl" *ngIf="activeTab === 'youareowed'"></div>
 </div>

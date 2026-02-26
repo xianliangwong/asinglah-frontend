@@ -12,6 +12,12 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { sidepanelReducer } from './features/sidepanel/sidepanel.reducer';
 import { SidePanelEffects } from './features/sidepanel/sidepanel.effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AgChartsModule } from 'ag-charts-angular';
+
+import { ModuleRegistry } from 'ag-charts-community';
+import { AllCommunityModule } from 'ag-charts-community';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,6 +32,7 @@ export const appConfig: ApplicationConfig = {
 
     //provides http client global, along with authenticator interceptors when access token expires
     importProvidersFrom(BrowserAnimationsModule),
+    importProvidersFrom(AgChartsModule),
     provideHttpClient(withInterceptors([AuthInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
   ],

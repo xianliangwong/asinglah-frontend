@@ -8,3 +8,8 @@ export const selectOweAmountState = createSelector(
   selectExpenseDonutChartState,
   (state) => state.oweAmount,
 );
+
+export const selectOweAmountDetail = createSelector(
+  selectExpenseDonutChartState,
+  (state) => state.oweExpenseDetail,
+);

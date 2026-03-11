@@ -1,21 +1,39 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, Signal } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
 import { AgChartsModule } from 'ag-charts-angular';
 import type { AgChartOptions } from 'ag-charts-community';
-import { selectOweAmountState } from 'src/app/features/expense-donutChart/expense-donutChart.selector';
+import { Observable } from 'rxjs';
+import {
+  selectOweAmountDetail,
+  selectOweAmountState,
+} from 'src/app/features/expense-donutChart/expense-donutChart.selector';
 import { ToastSignalService } from 'src/app/features/toast/ToastSignalService';
 import { ExpenseDonutChartResDTO } from 'src/app/model/responseDTO/ExpenseDonutChartResDTO';
+import { OweExpenseDetailsDto } from 'src/app/model/responseDTO/OweExpenseDetailsDTO';
 
 @Component({
   selector: 'app-owed-component',
   standalone: true,
-  imports: [AgChartsModule, CommonModule],
+  imports: [AgChartsModule, CommonModule, MatIconModule],
   templateUrl: './owed-component.component.html',
   styleUrl: './owed-component.component.css',
 })
 export class OwedComponentComponent {
   activeTab: 'youowed' | 'youareowed' = 'youowed';
+
+  currentOweExpenseDetailItem: number = 0;
+
+  oweExpenseDetail$!: Signal<OweExpenseDetailsDto[]>;
+
+  get isFirst(): boolean {
+    return true;
+  }
+
+  get isLast(): boolean {
+    return false;
+  }
 
   OweDonutChart$!: Signal<ExpenseDonutChartResDTO[]>;
 
@@ -80,9 +98,23 @@ export class OwedComponentComponent {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.oweExpenseDetail$ = this.store.selectSignal(selectOweAmountDetail);
+  }
 
   selectTab(tabName: 'youowed' | 'youareowed') {
     this.activeTab = tabName;
+  }
+
+  previousButton() {
+    if (this.currentOweExpenseDetailItem > 0) {
+      this.currentOweExpenseDetailItem--;
+    }
+  }
+
+  nextButton() {
+    if (this.currentOweExpenseDetailItem < this.oweExpenseDetail$().length) {
+      this.currentOweExpenseDetailItem++;
+    }
   }
 }

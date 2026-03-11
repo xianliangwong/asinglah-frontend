@@ -1,6 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { initState } from './expense-donutChart.state';
-import { callOweDonutChartReducer, resetOweDonutChartReducer } from './expense-donutChart.action';
+import {
+  callOweDonutChartReducer,
+  resetOweDonutChartReducer,
+  setOweExpenseDetailReducer,
+} from './expense-donutChart.action';
 
 export const expenseDonutChart = createReducer(
   initState,
@@ -13,5 +17,10 @@ export const expenseDonutChart = createReducer(
   on(resetOweDonutChartReducer, (state) => ({
     ...state,
     oweAmount: [],
+  })),
+
+  on(setOweExpenseDetailReducer, (state, { requestDTO }) => ({
+    ...state,
+    oweExpenseDetail: requestDTO,
   })),
 );

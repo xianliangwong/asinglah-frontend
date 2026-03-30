@@ -27,13 +27,13 @@ export class OwedComponentComponent {
 
   oweExpenseDetail$!: Signal<OweExpenseDetailsDto[]>;
 
-  get isFirst(): boolean {
-    return true;
-  }
+  initPayerName: string | undefined;
 
-  get isLast(): boolean {
-    return false;
-  }
+  initPayerDropDown: boolean = false;
+
+  isFirst: boolean = true;
+
+  isLast: boolean = false;
 
   OweDonutChart$!: Signal<ExpenseDonutChartResDTO[]>;
 
@@ -59,6 +59,7 @@ export class OwedComponentComponent {
     this.OweDonutChart$ = this.store.selectSignal(selectOweAmountState);
 
     effect(() => {
+      this.initPayerName = this.OweDonutChart$().at(0)?.name;
       const OweDonutChart = this.OweDonutChart$();
       if (OweDonutChart !== null && OweDonutChart !== undefined) {
         const chartData =
@@ -106,15 +107,31 @@ export class OwedComponentComponent {
     this.activeTab = tabName;
   }
 
+  dropDownInitPayerSelection() {
+    this.initPayerDropDown = !this.initPayerDropDown;
+  }
+
+  selectNewInitPayerName(name: string) {}
+
   previousButton() {
     if (this.currentOweExpenseDetailItem > 0) {
       this.currentOweExpenseDetailItem--;
+      this.isLast = false;
+    }
+
+    if (this.currentOweExpenseDetailItem === 0) {
+      this.isFirst = true;
     }
   }
 
   nextButton() {
     if (this.currentOweExpenseDetailItem < this.oweExpenseDetail$().length) {
       this.currentOweExpenseDetailItem++;
+      this.isFirst = false;
+    }
+
+    if (this.currentOweExpenseDetailItem === this.oweExpenseDetail$().length - 1) {
+      this.isLast = true;
     }
   }
 }

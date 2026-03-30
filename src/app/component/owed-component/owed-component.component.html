@@ -29,35 +29,104 @@
       <div class="w-1/2 h-full">
         <div class="flex flex-col w-full h-full">
           <!-- arrow left arrow right item -->
-          <div class="flex flex-row justify-end gap-x-2">
-            <button (click)="previousButton()" [disabled]="isFirst">
-              <mat-icon
-                class="material-icons icon-36 rounded-md"
-                fontIcon="chevron_left"
-                [class.text-gray-400]="isFirst"
-              ></mat-icon>
-            </button>
-            <button (click)="nextButton()" [disabled]="isLast">
-              <mat-icon class="material-icons icon-36 rounded-md" fontIcon="chevron_right">
-              </mat-icon>
-            </button>
+          <div class="flex flex-row justify-between items-center">
+            <div class="relative inline-block text-left">
+              <button
+                type="button"
+                class="inline-flex justify-center items-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                aria-expanded="true"
+                aria-haspopup="true"
+                (click)="dropDownInitPayerSelection()"
+              >
+                <span>Initial Payer Name </span>
+                <!-- Dropdown Arrow Icon -->
+                <svg
+                  class="-mr-1 ml-2 h-5 w-5"
+                  xmlns="www.w3.org"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+              <div
+                *ngIf="initPayerDropDown"
+                id="initPayerDropDown"
+                class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+              >
+                <div
+                  class="py-1"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="options-menu"
+                >
+                  <!-- Dropdown Item Option 1 (Flex row item) -->
+                  <ng-container *ngFor="let names of OweDonutChart$()">
+                    <a
+                      href="#"
+                      (click)="selectNewInitPayerName(names.name)"
+                      class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem"
+                    >
+                      {{ names.name }}
+                    </a>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-row gap-x-2">
+              <button (click)="previousButton()" [disabled]="isFirst">
+                <mat-icon
+                  class="material-icons icon-36 rounded-md"
+                  fontIcon="chevron_left"
+                  [class.text-gray-400]="isFirst"
+                ></mat-icon>
+              </button>
+              <button (click)="nextButton()" [disabled]="isLast">
+                <mat-icon
+                  class="material-icons icon-36 rounded-md"
+                  fontIcon="chevron_right"
+                  [class.text-gray-400]="isLast"
+                >
+                </mat-icon>
+              </button>
+            </div>
           </div>
           <!--owe item details-->
           <div class="flex flex-row border-[2px] border-gray-300 rounded-md w-full h-full">
-            <div class="flex flex-col">
+            <div class="flex flex-col mt-[25px] ml-2 gap-y-[10px] place-items-center">
               <!--profile pic as first item-->
+              <mat-icon
+                fontIcon="account_circle"
+                class="icon-56 !w-[48px] !h-[60px] !text-[48px]"
+              ></mat-icon>
               <!--name-->
+              <span class="">
+                {{ initPayerName }}
+              </span>
             </div>
-            <div class="flex flex-col gap-y-1">
+            <div class="flex flex-col mt-4 gap-y-1 mr-2 place-items-end w-full">
               <!--item 1: expense title-->
-              <div class="">
-                {{ oweExpenseDetail$().at(this.currentOweExpenseDetailItem)?.expenseDetails }}
+              <div class="flex flex-col place-items-end">
+                <span>Expense details:</span>
+                <span>{{
+                  oweExpenseDetail$().at(this.currentOweExpenseDetailItem)?.expenseDetails
+                }}</span>
               </div>
               <!--item 2: owed amount-->
-              <div class="">
-                {{ oweExpenseDetail$().at(this.currentOweExpenseDetailItem)?.amount }}
+              <div class="flex flex-col">
+                <span class="text-gray-400">You owe </span>
+                <span class="font-bold text-18pt"
+                  >$ {{ oweExpenseDetail$().at(this.currentOweExpenseDetailItem)?.amount }}</span
+                >
               </div>
-              <!--itme 3: settle up button-->
+              <!--item 3: settle up button-->
+              <div></div>
             </div>
           </div>
         </div>

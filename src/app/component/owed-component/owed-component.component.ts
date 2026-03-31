@@ -1,21 +1,39 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, Signal } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
 import { AgChartsModule } from 'ag-charts-angular';
 import type { AgChartOptions } from 'ag-charts-community';
-import { selectOweAmountState } from 'src/app/features/expense-donutChart/expense-donutChart.selector';
+import { Observable } from 'rxjs';
+import {
+  selectOweAmountDetail,
+  selectOweAmountState,
+} from 'src/app/features/expense-donutChart/expense-donutChart.selector';
 import { ToastSignalService } from 'src/app/features/toast/ToastSignalService';
 import { ExpenseDonutChartResDTO } from 'src/app/model/responseDTO/ExpenseDonutChartResDTO';
+import { OweExpenseDetailsDto } from 'src/app/model/responseDTO/OweExpenseDetailsDTO';
 
 @Component({
   selector: 'app-owed-component',
   standalone: true,
-  imports: [AgChartsModule, CommonModule],
+  imports: [AgChartsModule, CommonModule, MatIconModule],
   templateUrl: './owed-component.component.html',
   styleUrl: './owed-component.component.css',
 })
 export class OwedComponentComponent {
   activeTab: 'youowed' | 'youareowed' = 'youowed';
+
+  currentOweExpenseDetailItem: number = 0;
+
+  oweExpenseDetail$!: Signal<OweExpenseDetailsDto[]>;
+
+  initPayerName: string | undefined;
+
+  initPayerDropDown: boolean = false;
+
+  isFirst: boolean = true;
+
+  isLast: boolean = false;
 
   OweDonutChart$!: Signal<ExpenseDonutChartResDTO[]>;
 
@@ -41,6 +59,7 @@ export class OwedComponentComponent {
     this.OweDonutChart$ = this.store.selectSignal(selectOweAmountState);
 
     effect(() => {
+      this.initPayerName = this.OweDonutChart$().at(0)?.name;
       const OweDonutChart = this.OweDonutChart$();
       if (OweDonutChart !== null && OweDonutChart !== undefined) {
         const chartData =
@@ -80,9 +99,39 @@ export class OwedComponentComponent {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.oweExpenseDetail$ = this.store.selectSignal(selectOweAmountDetail);
+  }
 
   selectTab(tabName: 'youowed' | 'youareowed') {
     this.activeTab = tabName;
+  }
+
+  dropDownInitPayerSelection() {
+    this.initPayerDropDown = !this.initPayerDropDown;
+  }
+
+  selectNewInitPayerName(name: string) {}
+
+  previousButton() {
+    if (this.currentOweExpenseDetailItem > 0) {
+      this.currentOweExpenseDetailItem--;
+      this.isLast = false;
+    }
+
+    if (this.currentOweExpenseDetailItem === 0) {
+      this.isFirst = true;
+    }
+  }
+
+  nextButton() {
+    if (this.currentOweExpenseDetailItem < this.oweExpenseDetail$().length) {
+      this.currentOweExpenseDetailItem++;
+      this.isFirst = false;
+    }
+
+    if (this.currentOweExpenseDetailItem === this.oweExpenseDetail$().length - 1) {
+      this.isLast = true;
+    }
   }
 }
